@@ -36,7 +36,7 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 
 ## Milestone 4 — Portfolio release
 - [x] Dark enterprise UI with empty, loading and error states
-- [~] Dockerfiles + docker-compose (not built locally; CI docker job builds both images and smoke-tests the API)
+- [x] Dockerfiles + docker-compose: CI docker job builds both images and smoke-tests the API, including the IaC demo inside the container (not built locally)
 - [x] GitHub Actions CI: lint, types, tests, security subset, pip-audit, frontend build, npm audit, Docker build; actions on v7 (Node 24), runner pinned to ubuntu-24.04
 - [x] Threat model, security policy, limitations, resume bullets from verified facts
 - [x] Screenshots of all 8 pages + run detail in docs/screenshots/ (1440x900, headless Edge), embedded in README

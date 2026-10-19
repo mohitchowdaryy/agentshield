@@ -280,10 +280,13 @@ ruff check src tests && mypy src
 cd frontend && npm run build
 ```
 
-The suite (135 tests at the time of writing) uses Moto and monkeypatched botocore clients for AWS
-and a fake client for Anthropic. It makes no real AWS or LLM calls. CI
+The suite (167 tests at the time of writing) uses Moto and monkeypatched botocore clients for AWS,
+a fake client for Anthropic, a mocked HTTP transport for Ollama, and real captured Checkov output
+replayed by a fake scanner. It makes no real AWS or LLM calls. One integration test runs the real
+Checkov scanner when it is installed (CI installs it). CI
 ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs lint, type checks, tests, a security
-regression subset, `pip-audit`, the frontend build and `npm audit`.
+regression subset, `pip-audit`, the frontend build, `npm audit`, and a Docker job that builds both
+images and runs the IaC demo inside the API container.
 
 ## Infrastructure-as-Code security scanning (no cloud account needed)
 

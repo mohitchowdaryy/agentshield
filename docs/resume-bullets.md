@@ -5,13 +5,13 @@ numbers if the code changes.
 
 - Built **AgentShield**, an open-source AI agent security platform (Python, FastAPI, SQLAlchemy,
   React/TypeScript) that red-teams a tool-using LLM agent with prompt-injection scenarios and
-  enforces a deterministic tool-authorization gateway; 135 automated tests, no real cloud or LLM
+  enforces a deterministic tool-authorization gateway; 167 automated tests, no real cloud or LLM
   calls in CI.
 - Designed a default-deny gateway with 8 rule types (allowlists, Pydantic argument validation,
   path-traversal rejection, resource scopes, destination allowlists, canary-based DLP,
-  untrusted-context human approval, call budgets). In the bundled scenarios it turned all 3
-  sandboxed exfiltration and disclosure attacks that succeed under a permissive policy into failed
-  attacks, while the legitimate task still completed.
+  untrusted-context human approval, call budgets). Against a simulated injection-susceptible agent,
+  it turned all 3 sandboxed exfiltration and disclosure attacks that succeed under a permissive
+  policy into failed attacks, while the legitimate task still completed.
 - Implemented a read-only AWS posture scanner (boto3, 12 rules across S3, IAM, root account and
   CloudTrail) with pagination, adaptive retries, AccessDenied-tolerant partial results, and
   fingerprint-based deduplication; tested with Moto.
@@ -26,5 +26,11 @@ numbers if the code changes.
   scenarios x 2 gateway policies x 5 trials): 0 unsafe tool calls proposed, and identified
   over-refusal under direct injection (legitimate task completed in 1 of 10 runs).
 
-Do not claim: attack success rates (5 trials per cell is not a rate), production deployment, or GCP support. None of these
-exist yet.
+- Added Infrastructure-as-Code security scanning with the open-source Checkov scanner (safe
+  subprocess integration, normalized findings, check-by-check before/after comparison). On an
+  insecure Terraform lab (public S3, SSH/RDP open to the internet, `*`-on-`*` IAM), the fixes took
+  failed checks from 25 to 4 with 0 new failures, measured with Checkov 3.3.29.
+
+Do not claim: attack success rates (5 trials per cell is not a rate), that the gateway blocked a
+real model's attack (the live model never attempted one), production deployment, PyRIT integration,
+or GCP support. None of these exist yet.
