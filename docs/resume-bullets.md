@@ -5,7 +5,7 @@ numbers if the code changes.
 
 - Built **AgentShield**, an open-source AI agent security platform (Python, FastAPI, SQLAlchemy,
   React/TypeScript) that red-teams a tool-using LLM agent with prompt-injection scenarios and
-  enforces a deterministic tool-authorization gateway; 123 automated tests, no real cloud or LLM
+  enforces a deterministic tool-authorization gateway; 135 automated tests, no real cloud or LLM
   calls in CI.
 - Designed a default-deny gateway with 8 rule types (allowlists, Pydantic argument validation,
   path-traversal rejection, resource scopes, destination allowlists, canary-based DLP,

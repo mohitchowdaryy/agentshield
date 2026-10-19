@@ -23,8 +23,9 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 - [ ] Live verification against the Anthropic API (needs a key; incurs charges)
 
 ## Milestone 3 — Research platform
-- [ ] Scenarios 4–10+: jailbreak resistance, multi-step workflow manipulation, excessive agency, tool-output contamination of later turns, unauthorized tool attempts via aliasing, confidential-data summarization leak, approval-fatigue
-- [ ] Repeated-trial runs with per-scenario counts and confidence intervals
+- [ ] Scenarios 4–10+: jailbreak resistance, multi-step workflow manipulation, excessive agency, tool-output contamination of later turns, unauthorized tool attempts via aliasing, confidential-data summarization leak, approval fatigue. Plan: adapt tasks from published benchmarks (AgentDojo, InjecAgent) and load them through a scenario importer (not built yet)
+- [x] Repeated trial sets: `redteam run --trials N` (1–50), `trial_sets` table (migration 0002) with outcome and check counts, `/api/redteam/trials`, History page card; tests cover counts, API, CLI and migration round-trip
+- [ ] Confidence intervals for live-model trial counts
 - [x] Evidence export (JSON/CSV) via API and CLI
 - [x] CI security regression subset (gateway, scenarios, redaction)
 - [ ] PyRIT adapter

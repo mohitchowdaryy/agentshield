@@ -175,6 +175,10 @@ agentshield redteam run --scenario direct-injection --mode vulnerable --profile 
 ```
 
 ```bash
+agentshield redteam run --scenario indirect-injection --provider anthropic --trials 10
+```
+
+```bash
 agentshield redteam run-all --provider anthropic
 ```
 
@@ -259,7 +263,7 @@ ruff check src tests && mypy src
 cd frontend && npm run build
 ```
 
-The suite (123 tests at the time of writing) uses Moto and monkeypatched botocore clients for AWS
+The suite (135 tests at the time of writing) uses Moto and monkeypatched botocore clients for AWS
 and a fake client for Anthropic. It makes no real AWS or LLM calls. CI
 ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs lint, type checks, tests, a security
 regression subset, `pip-audit`, the frontend build and `npm audit`.
