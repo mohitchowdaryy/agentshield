@@ -55,6 +55,11 @@ class RunRequest(BaseModel):
     profile: Literal["naive", "resistant"] = "naive"
 
 
+class IacScanRequest(BaseModel):
+    # Browser-initiated scans are limited to the bundled lab; use the CLI to scan other directories.
+    target: Literal["insecure", "secure"]
+
+
 class TrialRequest(BaseModel):
     scenario_id: str = Field(max_length=64)
     mode: Literal["protected", "vulnerable"] = "protected"
@@ -479,6 +484,142 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.post("/api/correlations/recompute", dependencies=[Depends(require_token)])
     def recompute(s: Session = Depends(session)) -> list[dict[str, Any]]:
         return [q.correlation_dict(c) for c in compute_correlations(s)]
+
+    # -- infrastructure-as-code scanning (static; not live CSPM) --------------------------------
+    @app.get("/api/iac/scanner")
+    def iac_scanner() -> dict[str, Any]:
+        from agentshield.services.iac import scanner_info
+
+        return scanner_info()
+
+    @app.get("/api/iac/scans")
+    def iac_scans(s: Session = Depends(session)) -> list[dict[str, Any]]:
+        from agentshield.models import IacScan
+        from agentshield.services.iac import scan_dict
+
+        rows = s.scalars(
+            select(IacScan).options(selectinload(IacScan.findings)).order_by(IacScan.started_at.desc())
+        ).all()
+        return [scan_dict(r) for r in rows]
+
+    @app.post("/api/iac/scans", dependencies=[Depends(require_token)])
+    def iac_create_scan(req: IacScanRequest, s: Session = Depends(session)) -> dict[str, Any]:
+        from agentshield.iac.checkov import CheckovError
+        from agentshield.services.iac import lab_target, run_iac_scan, scan_dict
+
+        try:
+            scan = run_iac_scan(s, lab_target(req.target), req.target)
+        except CheckovError as exc:
+            raise HTTPException(503, str(exc)) from exc
+        return scan_dict(scan)
+
+    @app.get("/api/iac/scans/{scan_id}")
+    def iac_get_scan(scan_id: str, s: Session = Depends(session)) -> dict[str, Any]:
+        from agentshield.models import IacScan
+        from agentshield.services.iac import scan_dict
+
+        row = s.get(IacScan, scan_id)
+        if row is None:
+            raise HTTPException(404, "IaC scan not found")
+        return scan_dict(row)
+
+    def _iac_findings(
+        s: Session, scan_id: str | None, result: str | None, resource: str | None, check_id: str | None, q_: str | None
+    ) -> list[Any]:
+        from agentshield.models import IacFinding
+
+        stmt = select(IacFinding).order_by(IacFinding.result, IacFinding.resource, IacFinding.check_id)
+        if scan_id:
+            stmt = stmt.where(IacFinding.scan_fk == scan_id)
+        if result:
+            stmt = stmt.where(IacFinding.result == result)
+        if resource:
+            stmt = stmt.where(IacFinding.resource == resource)
+        if check_id:
+            stmt = stmt.where(IacFinding.check_id == check_id)
+        if q_:
+            like = f"%{q_.lower()}%"
+            stmt = stmt.where(
+                IacFinding.check_name.ilike(like) | IacFinding.check_id.ilike(like) | IacFinding.resource.ilike(like)
+            )
+        return list(s.scalars(stmt).all())
+
+    @app.get("/api/iac/findings")
+    def iac_findings(
+        scan_id: str | None = Query(default=None, max_length=40),
+        result: Literal["failed", "passed", "skipped"] | None = None,
+        resource: str | None = Query(default=None, max_length=512),
+        check_id: str | None = Query(default=None, max_length=64),
+        q_: str | None = Query(default=None, alias="q", max_length=200),
+        s: Session = Depends(session),
+    ) -> list[dict[str, Any]]:
+        from agentshield.services.iac import finding_dict
+
+        return [finding_dict(f, detail=True) for f in _iac_findings(s, scan_id, result, resource, check_id, q_)]
+
+    @app.get("/api/iac/findings/export")
+    def iac_export(
+        format: Literal["json", "csv"] = "json",
+        scan_id: str | None = Query(default=None, max_length=40),
+        result: Literal["failed", "passed", "skipped"] | None = None,
+        s: Session = Depends(session),
+    ) -> Response:
+        from agentshield.services.iac import finding_dict
+
+        rows = [finding_dict(f, detail=format == "json") for f in _iac_findings(s, scan_id, result, None, None, None)]
+        if format == "csv":
+            fields = [
+                "scan_id",
+                "check_id",
+                "check_name",
+                "result",
+                "resource",
+                "resource_type",
+                "file_path",
+                "line_start",
+                "line_end",
+                "severity",
+                "guideline",
+                "remediation",
+                "fingerprint",
+            ]
+            return PlainTextResponse(
+                q.to_csv(rows, fields),
+                media_type="text/csv",
+                headers={"Content-Disposition": "attachment; filename=agentshield-iac.csv"},
+            )
+        return JSONResponse(rows, headers={"Content-Disposition": "attachment; filename=agentshield-iac.json"})
+
+    @app.get("/api/iac/compare")
+    def iac_compare(
+        before: str | None = Query(default=None, max_length=40),
+        after: str | None = Query(default=None, max_length=40),
+        s: Session = Depends(session),
+    ) -> dict[str, Any]:
+        from agentshield.services.iac import compare_scans, latest_lab_pair
+
+        if not (before and after):
+            b, a = latest_lab_pair(s)
+            if b is None or a is None:
+                raise HTTPException(404, "no completed insecure and secure lab scans to compare yet")
+            before, after = b.id, a.id
+        try:
+            return compare_scans(s, before, after)
+        except KeyError as exc:
+            raise HTTPException(404, "IaC scan not found") from exc
+
+    @app.post("/api/iac/demo", dependencies=[Depends(require_token)])
+    def iac_demo(s: Session = Depends(session)) -> dict[str, Any]:
+        from agentshield.iac.checkov import CheckovError
+        from agentshield.services.iac import run_lab_demo
+
+        try:
+            result = run_lab_demo(s)
+        except CheckovError as exc:
+            raise HTTPException(503, str(exc)) from exc
+        if "error" in result:
+            raise HTTPException(503, f"Checkov scan failed: {result['error']}")
+        return result
 
     # -- demo --------------------------------------------------------------------------------
     @app.post("/api/demo", dependencies=[Depends(require_token)])

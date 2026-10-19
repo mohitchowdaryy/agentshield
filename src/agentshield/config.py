@@ -48,6 +48,12 @@ class Settings(BaseSettings):
     # None uses the model's default sampling, so repeated trials can differ.
     ollama_temperature: float | None = None
 
+    # Infrastructure-as-Code scanning (static; no deployment, no cloud credentials)
+    # Path to a `checkov` executable or to the Python interpreter of a virtualenv that has Checkov.
+    checkov_path: str | None = None
+    checkov_timeout_seconds: float = 300.0
+    iac_lab_dir: str = "terraform-lab"
+
     # AWS scanning
     aws_profile: str | None = None
     aws_regions: list[str] = []

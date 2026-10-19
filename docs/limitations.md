@@ -33,6 +33,18 @@ AgentShield is a research MVP. These limits are known and deliberate; none of th
 - The Anthropic adapter is unit-tested with a fake client. It has not been exercised against the
   live API in this repository's automated tests (that would incur charges).
 
+## Infrastructure-as-Code scanning
+
+- Static analysis only: Checkov sees what is written in the Terraform files, not deployed state,
+  module inputs resolved at apply time, account-level settings, or drift.
+- Checkov's open-source checks reported no severity for any lab finding; AgentShield shows
+  "not provided" rather than assigning one. Guidelines are also empty in offline (`--skip-download`)
+  mode.
+- The comparison matches findings on (check_id, resource address). Renaming a resource makes its
+  checks show as "not evaluated after" / "new failure" rather than "fixed".
+- The lab covers AWS Terraform only; no GCP or other IaC formats yet.
+- Result counts depend on the Checkov version (pinned to 3.3.29 in CI and Docker).
+
 ## Platform security
 
 - Single-user local tool: no authentication beyond an optional shared bearer token for mutating

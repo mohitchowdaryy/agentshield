@@ -363,3 +363,66 @@ export function qs(params: Record<string, string | string[] | undefined | null>)
   const s = sp.toString();
   return s ? `?${s}` : "";
 }
+
+// Infrastructure-as-Code scanning (static analysis of files; not live cloud posture).
+export interface IacScan {
+  id: string;
+  label: string;
+  target: string;
+  scanner: string;
+  scanner_version: string | null;
+  framework: string;
+  status: "completed" | "failed";
+  summary: { passed?: number; failed?: number; skipped?: number; parsing_errors?: number; resource_count?: number };
+  stored_counts: { failed: number; passed: number; skipped: number };
+  command: string[];
+  parsing_errors: string[];
+  error: string | null;
+  duration_ms: number | null;
+  started_at: string;
+  finished_at: string | null;
+  kind: "iac_static_analysis";
+}
+
+export interface IacFinding {
+  id: string;
+  scan_id: string;
+  fingerprint: string;
+  check_id: string;
+  check_name: string;
+  result: "failed" | "passed" | "skipped";
+  resource: string;
+  resource_type: string;
+  file_path: string;
+  line_start: number | null;
+  line_end: number | null;
+  severity: string | null;
+  guideline: string | null;
+  remediation: string;
+  evidence?: { evaluated_keys?: string[]; code?: [number, string][]; check_class?: string; bc_check_id?: string };
+}
+
+export interface IacComparison {
+  before: IacScan;
+  after: IacScan;
+  fixed: IacFinding[];
+  still_failing: IacFinding[];
+  new_failures: IacFinding[];
+  not_evaluated_after: IacFinding[];
+  counts: {
+    failed_before: number;
+    failed_after: number;
+    fixed: number;
+    still_failing: number;
+    new_failures: number;
+    not_evaluated_after: number;
+  };
+  method: string;
+}
+
+export interface IacScannerInfo {
+  available: boolean;
+  scanner: string;
+  version: string | null;
+  error: string | null;
+}
