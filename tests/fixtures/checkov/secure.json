@@ -1,0 +1,4347 @@
+{
+ "check_type": "terraform",
+ "results": {
+  "passed_checks": [
+   {
+    "check_id": "CKV_AWS_227",
+    "bc_check_id": null,
+    "check_name": "Ensure KMS key is enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "is_enabled"
+     ]
+    },
+    "code_block": [
+     [
+      36,
+      "resource \"aws_kms_key\" \"reports\" {\n"
+     ],
+     [
+      37,
+      "  description             = \"Encryption key for the lab reports bucket\"\n"
+     ],
+     [
+      38,
+      "  enable_key_rotation     = true\n"
+     ],
+     [
+      39,
+      "  deletion_window_in_days = 30\n"
+     ],
+     [
+      40,
+      "  # Explicit key policy: only the owning account administers the key.\n"
+     ],
+     [
+      41,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      42,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      43,
+      "    Statement = [{\n"
+     ],
+     [
+      44,
+      "      Sid       = \"AccountAdministration\"\n"
+     ],
+     [
+      45,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      46,
+      "      Principal = { AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\" }\n"
+     ],
+     [
+      47,
+      "      Action    = \"kms:*\"\n"
+     ],
+     [
+      48,
+      "      Resource  = \"*\"\n"
+     ],
+     [
+      49,
+      "    }]\n"
+     ],
+     [
+      50,
+      "  })\n"
+     ],
+     [
+      51,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     36,
+     51
+    ],
+    "resource": "aws_kms_key.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.KMSKeyIsEnabled",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_33",
+    "bc_check_id": null,
+    "check_name": "Ensure KMS key policy does not contain wildcard (*) principal",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy/[0]/Statement"
+     ]
+    },
+    "code_block": [
+     [
+      36,
+      "resource \"aws_kms_key\" \"reports\" {\n"
+     ],
+     [
+      37,
+      "  description             = \"Encryption key for the lab reports bucket\"\n"
+     ],
+     [
+      38,
+      "  enable_key_rotation     = true\n"
+     ],
+     [
+      39,
+      "  deletion_window_in_days = 30\n"
+     ],
+     [
+      40,
+      "  # Explicit key policy: only the owning account administers the key.\n"
+     ],
+     [
+      41,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      42,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      43,
+      "    Statement = [{\n"
+     ],
+     [
+      44,
+      "      Sid       = \"AccountAdministration\"\n"
+     ],
+     [
+      45,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      46,
+      "      Principal = { AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\" }\n"
+     ],
+     [
+      47,
+      "      Action    = \"kms:*\"\n"
+     ],
+     [
+      48,
+      "      Resource  = \"*\"\n"
+     ],
+     [
+      49,
+      "    }]\n"
+     ],
+     [
+      50,
+      "  })\n"
+     ],
+     [
+      51,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     36,
+     51
+    ],
+    "resource": "aws_kms_key.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.KMSKeyWildcardPrincipal",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_7",
+    "bc_check_id": null,
+    "check_name": "Ensure rotation for customer created CMKs is enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "enable_key_rotation"
+     ]
+    },
+    "code_block": [
+     [
+      36,
+      "resource \"aws_kms_key\" \"reports\" {\n"
+     ],
+     [
+      37,
+      "  description             = \"Encryption key for the lab reports bucket\"\n"
+     ],
+     [
+      38,
+      "  enable_key_rotation     = true\n"
+     ],
+     [
+      39,
+      "  deletion_window_in_days = 30\n"
+     ],
+     [
+      40,
+      "  # Explicit key policy: only the owning account administers the key.\n"
+     ],
+     [
+      41,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      42,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      43,
+      "    Statement = [{\n"
+     ],
+     [
+      44,
+      "      Sid       = \"AccountAdministration\"\n"
+     ],
+     [
+      45,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      46,
+      "      Principal = { AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\" }\n"
+     ],
+     [
+      47,
+      "      Action    = \"kms:*\"\n"
+     ],
+     [
+      48,
+      "      Resource  = \"*\"\n"
+     ],
+     [
+      49,
+      "    }]\n"
+     ],
+     [
+      50,
+      "  })\n"
+     ],
+     [
+      51,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     36,
+     51
+    ],
+    "resource": "aws_kms_key.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.KMSRotation",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_93",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3ProtectAgainstPolicyLockout",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_53",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket has block public ACLS enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "block_public_acls"
+     ]
+    },
+    "code_block": [
+     [
+      58,
+      "resource \"aws_s3_bucket_public_access_block\" \"reports\" {\n"
+     ],
+     [
+      59,
+      "  bucket                  = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      60,
+      "  block_public_acls       = true\n"
+     ],
+     [
+      61,
+      "  block_public_policy     = true\n"
+     ],
+     [
+      62,
+      "  ignore_public_acls      = true\n"
+     ],
+     [
+      63,
+      "  restrict_public_buckets = true\n"
+     ],
+     [
+      64,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     58,
+     64
+    ],
+    "resource": "aws_s3_bucket_public_access_block.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3BlockPublicACLs",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_54",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket has block public policy enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "block_public_policy"
+     ]
+    },
+    "code_block": [
+     [
+      58,
+      "resource \"aws_s3_bucket_public_access_block\" \"reports\" {\n"
+     ],
+     [
+      59,
+      "  bucket                  = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      60,
+      "  block_public_acls       = true\n"
+     ],
+     [
+      61,
+      "  block_public_policy     = true\n"
+     ],
+     [
+      62,
+      "  ignore_public_acls      = true\n"
+     ],
+     [
+      63,
+      "  restrict_public_buckets = true\n"
+     ],
+     [
+      64,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     58,
+     64
+    ],
+    "resource": "aws_s3_bucket_public_access_block.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3BlockPublicPolicy",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_55",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket has ignore public ACLs enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "ignore_public_acls"
+     ]
+    },
+    "code_block": [
+     [
+      58,
+      "resource \"aws_s3_bucket_public_access_block\" \"reports\" {\n"
+     ],
+     [
+      59,
+      "  bucket                  = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      60,
+      "  block_public_acls       = true\n"
+     ],
+     [
+      61,
+      "  block_public_policy     = true\n"
+     ],
+     [
+      62,
+      "  ignore_public_acls      = true\n"
+     ],
+     [
+      63,
+      "  restrict_public_buckets = true\n"
+     ],
+     [
+      64,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     58,
+     64
+    ],
+    "resource": "aws_s3_bucket_public_access_block.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3IgnorePublicACLs",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_56",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket has 'restrict_public_buckets' enabled",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "restrict_public_buckets"
+     ]
+    },
+    "code_block": [
+     [
+      58,
+      "resource \"aws_s3_bucket_public_access_block\" \"reports\" {\n"
+     ],
+     [
+      59,
+      "  bucket                  = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      60,
+      "  block_public_acls       = true\n"
+     ],
+     [
+      61,
+      "  block_public_policy     = true\n"
+     ],
+     [
+      62,
+      "  ignore_public_acls      = true\n"
+     ],
+     [
+      63,
+      "  restrict_public_buckets = true\n"
+     ],
+     [
+      64,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     58,
+     64
+    ],
+    "resource": "aws_s3_bucket_public_access_block.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3RestrictPublicBuckets",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_70",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket does not allow an action with any Principal",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy"
+     ]
+    },
+    "code_block": [
+     [
+      67,
+      "resource \"aws_s3_bucket_policy\" \"reports\" {\n"
+     ],
+     [
+      68,
+      "  bucket = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      69,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      70,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      71,
+      "    Statement = [{\n"
+     ],
+     [
+      72,
+      "      Sid       = \"DenyInsecureTransport\"\n"
+     ],
+     [
+      73,
+      "      Effect    = \"Deny\"\n"
+     ],
+     [
+      74,
+      "      Principal = \"*\"\n"
+     ],
+     [
+      75,
+      "      Action    = \"s3:*\"\n"
+     ],
+     [
+      76,
+      "      Resource = [\n"
+     ],
+     [
+      77,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      78,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      79,
+      "      ]\n"
+     ],
+     [
+      80,
+      "      Condition = { Bool = { \"aws:SecureTransport\" = \"false\" } }\n"
+     ],
+     [
+      81,
+      "    }]\n"
+     ],
+     [
+      82,
+      "  })\n"
+     ],
+     [
+      83,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     67,
+     83
+    ],
+    "resource": "aws_s3_bucket_policy.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3AllowsAnyPrincipal",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_93",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 bucket policy does not lockout all but root user. (Prevent lockouts needing root account fixes)",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy"
+     ]
+    },
+    "code_block": [
+     [
+      67,
+      "resource \"aws_s3_bucket_policy\" \"reports\" {\n"
+     ],
+     [
+      68,
+      "  bucket = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      69,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      70,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      71,
+      "    Statement = [{\n"
+     ],
+     [
+      72,
+      "      Sid       = \"DenyInsecureTransport\"\n"
+     ],
+     [
+      73,
+      "      Effect    = \"Deny\"\n"
+     ],
+     [
+      74,
+      "      Principal = \"*\"\n"
+     ],
+     [
+      75,
+      "      Action    = \"s3:*\"\n"
+     ],
+     [
+      76,
+      "      Resource = [\n"
+     ],
+     [
+      77,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      78,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      79,
+      "      ]\n"
+     ],
+     [
+      80,
+      "      Condition = { Bool = { \"aws:SecureTransport\" = \"false\" } }\n"
+     ],
+     [
+      81,
+      "    }]\n"
+     ],
+     [
+      82,
+      "  })\n"
+     ],
+     [
+      83,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     67,
+     83
+    ],
+    "resource": "aws_s3_bucket_policy.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3ProtectAgainstPolicyLockout",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_300",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 lifecycle configuration sets period for aborting failed uploads",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "rule/[0]/abort_incomplete_multipart_upload"
+     ]
+    },
+    "code_block": [
+     [
+      96,
+      "resource \"aws_s3_bucket_lifecycle_configuration\" \"reports\" {\n"
+     ],
+     [
+      97,
+      "  bucket = aws_s3_bucket.reports.id\n"
+     ],
+     [
+      98,
+      "  rule {\n"
+     ],
+     [
+      99,
+      "    id     = \"expire-old-versions\"\n"
+     ],
+     [
+      100,
+      "    status = \"Enabled\"\n"
+     ],
+     [
+      101,
+      "    filter {}\n"
+     ],
+     [
+      102,
+      "    noncurrent_version_expiration {\n"
+     ],
+     [
+      103,
+      "      noncurrent_days = 90\n"
+     ],
+     [
+      104,
+      "    }\n"
+     ],
+     [
+      105,
+      "    abort_incomplete_multipart_upload {\n"
+     ],
+     [
+      106,
+      "      days_after_initiation = 7\n"
+     ],
+     [
+      107,
+      "    }\n"
+     ],
+     [
+      108,
+      "  }\n"
+     ],
+     [
+      109,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     96,
+     109
+    ],
+    "resource": "aws_s3_bucket_lifecycle_configuration.reports",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.S3AbortIncompleteUploads",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_23",
+    "bc_check_id": null,
+    "check_name": "Ensure every security group and rule has a description",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "description"
+     ]
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupRuleDescription",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_382",
+    "bc_check_id": null,
+    "check_name": "Ensure no security groups allow egress from 0.0.0.0:0 to port -1",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedEgressAny",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_24",
+    "bc_check_id": null,
+    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 22",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress22",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_25",
+    "bc_check_id": null,
+    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 3389",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress3389",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_260",
+    "bc_check_id": null,
+    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port 80",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngress80",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_277",
+    "bc_check_id": null,
+    "check_name": "Ensure no security groups allow ingress from 0.0.0.0:0 to port -1",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.SecurityGroupUnrestrictedIngressAny",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_393",
+    "bc_check_id": null,
+    "check_name": "Ensure AWS GitHub Actions OIDC authorization policies only allow safe claims and claim order on IAM role",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "assume_role_policy"
+     ]
+    },
+    "code_block": [
+     [
+      145,
+      "resource \"aws_iam_role\" \"app\" {\n"
+     ],
+     [
+      146,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      147,
+      "  assume_role_policy = jsonencode({\n"
+     ],
+     [
+      148,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      149,
+      "    Statement = [{\n"
+     ],
+     [
+      150,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      151,
+      "      Principal = { Service = \"ec2.amazonaws.com\" }\n"
+     ],
+     [
+      152,
+      "      Action    = \"sts:AssumeRole\"\n"
+     ],
+     [
+      153,
+      "    }]\n"
+     ],
+     [
+      154,
+      "  })\n"
+     ],
+     [
+      155,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     145,
+     155
+    ],
+    "resource": "aws_iam_role.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.GithubActionsOIDCTrustPolicyOnRole",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_274",
+    "bc_check_id": null,
+    "check_name": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      145,
+      "resource \"aws_iam_role\" \"app\" {\n"
+     ],
+     [
+      146,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      147,
+      "  assume_role_policy = jsonencode({\n"
+     ],
+     [
+      148,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      149,
+      "    Statement = [{\n"
+     ],
+     [
+      150,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      151,
+      "      Principal = { Service = \"ec2.amazonaws.com\" }\n"
+     ],
+     [
+      152,
+      "      Action    = \"sts:AssumeRole\"\n"
+     ],
+     [
+      153,
+      "    }]\n"
+     ],
+     [
+      154,
+      "  })\n"
+     ],
+     [
+      155,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     145,
+     155
+    ],
+    "resource": "aws_iam_role.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMManagedAdminPolicy",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_61",
+    "bc_check_id": null,
+    "check_name": "Ensure AWS IAM policy does not allow assume role permission across all services",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "assume_role_policy"
+     ]
+    },
+    "code_block": [
+     [
+      145,
+      "resource \"aws_iam_role\" \"app\" {\n"
+     ],
+     [
+      146,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      147,
+      "  assume_role_policy = jsonencode({\n"
+     ],
+     [
+      148,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      149,
+      "    Statement = [{\n"
+     ],
+     [
+      150,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      151,
+      "      Principal = { Service = \"ec2.amazonaws.com\" }\n"
+     ],
+     [
+      152,
+      "      Action    = \"sts:AssumeRole\"\n"
+     ],
+     [
+      153,
+      "    }]\n"
+     ],
+     [
+      154,
+      "  })\n"
+     ],
+     [
+      155,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     145,
+     155
+    ],
+    "resource": "aws_iam_role.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMRoleAllowAssumeFromAccount",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_60",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM role allows only specific services or principals to assume it",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "assume_role_policy"
+     ]
+    },
+    "code_block": [
+     [
+      145,
+      "resource \"aws_iam_role\" \"app\" {\n"
+     ],
+     [
+      146,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      147,
+      "  assume_role_policy = jsonencode({\n"
+     ],
+     [
+      148,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      149,
+      "    Statement = [{\n"
+     ],
+     [
+      150,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      151,
+      "      Principal = { Service = \"ec2.amazonaws.com\" }\n"
+     ],
+     [
+      152,
+      "      Action    = \"sts:AssumeRole\"\n"
+     ],
+     [
+      153,
+      "    }]\n"
+     ],
+     [
+      154,
+      "  })\n"
+     ],
+     [
+      155,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     145,
+     155
+    ],
+    "resource": "aws_iam_role.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMRoleAllowsPublicAssume",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_62",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies that allow full \"*-*\" administrative privileges are not created",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy",
+      "inline_policy"
+     ]
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMAdminPolicyDocument",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_287",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies does not allow credentials exposure",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMCredentialsExposure",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_288",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies does not allow data exfiltration",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMDataExfiltration",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_289",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies does not allow permissions management / resource exposure without constraints",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMPermissionsManagement",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_286",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies does not allow privilege escalation",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMPrivilegeEscalation",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_63",
+    "bc_check_id": null,
+    "check_name": "Ensure no IAM policies documents allow \"*\" as a statement's actions",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": [
+      "policy",
+      "inline_policy"
+     ]
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMStarActionPolicyDocument",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_355",
+    "bc_check_id": null,
+    "check_name": "Ensure no IAM policies documents allow \"*\" as a statement's resource for restrictable actions",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMStarResourcePolicyDocument",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_290",
+    "bc_check_id": null,
+    "check_name": "Ensure IAM policies does not allow write access without constraints",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMWriteAccess",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_274",
+    "bc_check_id": null,
+    "check_name": "Disallow IAM roles, users, and groups from using the AWS AdministratorAccess policy",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      173,
+      "resource \"aws_iam_role_policy_attachment\" \"app\" {\n"
+     ],
+     [
+      174,
+      "  role       = aws_iam_role.app.name\n"
+     ],
+     [
+      175,
+      "  policy_arn = aws_iam_policy.app.arn\n"
+     ],
+     [
+      176,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     173,
+     176
+    ],
+    "resource": "aws_iam_role_policy_attachment.app",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.resource.aws.IAMManagedAdminPolicy",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_41",
+    "bc_check_id": null,
+    "check_name": "Ensure no hard coded AWS access key and secret key exists in provider",
+    "check_result": {
+     "result": "PASSED",
+     "evaluated_keys": []
+    },
+    "code_block": [
+     [
+      16,
+      "provider \"aws\" {\n"
+     ],
+     [
+      17,
+      "  region = \"us-east-1\"\n"
+     ],
+     [
+      18,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     16,
+     18
+    ],
+    "resource": "aws.default",
+    "evaluations": null,
+    "check_class": "checkov.terraform.checks.provider.aws.credentials",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_56",
+    "bc_check_id": null,
+    "check_name": "Ensure AWS Managed IAMFullAccess IAM policy is not used.",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_iam_role": {
+       "app": {
+        "__end_line__": 155,
+        "__start_line__": 145,
+        "assume_role_policy": [
+         {
+          "Version": "2012-10-17",
+          "Statement": [
+           {
+            "Effect": "Allow",
+            "Principal": {
+             "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+           }
+          ]
+         }
+        ],
+        "name": [
+         "agentshield-lab-app"
+        ],
+        "__address__": "aws_iam_role.app",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "name",
+      "policy_arn",
+      "managed_policy_arn",
+      "arn",
+      "managed_policy_arns/*"
+     ]
+    },
+    "code_block": [
+     [
+      145,
+      "resource \"aws_iam_role\" \"app\" {\n"
+     ],
+     [
+      146,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      147,
+      "  assume_role_policy = jsonencode({\n"
+     ],
+     [
+      148,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      149,
+      "    Statement = [{\n"
+     ],
+     [
+      150,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      151,
+      "      Principal = { Service = \"ec2.amazonaws.com\" }\n"
+     ],
+     [
+      152,
+      "      Action    = \"sts:AssumeRole\"\n"
+     ],
+     [
+      153,
+      "    }]\n"
+     ],
+     [
+      154,
+      "  })\n"
+     ],
+     [
+      155,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     145,
+     155
+    ],
+    "resource": "aws_iam_role.app",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_64",
+    "bc_check_id": null,
+    "check_name": "Ensure KMS key Policy is defined",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_kms_key": {
+       "reports": {
+        "__end_line__": 51,
+        "__start_line__": 36,
+        "deletion_window_in_days": [
+         30
+        ],
+        "description": [
+         "Encryption key for the lab reports bucket"
+        ],
+        "enable_key_rotation": [
+         true
+        ],
+        "policy": [
+         {
+          "Version": "2012-10-17",
+          "Statement": [
+           {
+            "Sid": "AccountAdministration",
+            "Effect": "Allow",
+            "Principal": {
+             "AWS": "arn:aws:iam::data.aws_caller_identity.current.account_id:root"
+            },
+            "Action": "kms:*",
+            "Resource": "*"
+           }
+          ]
+         }
+        ],
+        "__address__": "aws_kms_key.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "policy",
+      "resource_type"
+     ]
+    },
+    "code_block": [
+     [
+      36,
+      "resource \"aws_kms_key\" \"reports\" {\n"
+     ],
+     [
+      37,
+      "  description             = \"Encryption key for the lab reports bucket\"\n"
+     ],
+     [
+      38,
+      "  enable_key_rotation     = true\n"
+     ],
+     [
+      39,
+      "  deletion_window_in_days = 30\n"
+     ],
+     [
+      40,
+      "  # Explicit key policy: only the owning account administers the key.\n"
+     ],
+     [
+      41,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      42,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      43,
+      "    Statement = [{\n"
+     ],
+     [
+      44,
+      "      Sid       = \"AccountAdministration\"\n"
+     ],
+     [
+      45,
+      "      Effect    = \"Allow\"\n"
+     ],
+     [
+      46,
+      "      Principal = { AWS = \"arn:aws:iam::${data.aws_caller_identity.current.account_id}:root\" }\n"
+     ],
+     [
+      47,
+      "      Action    = \"kms:*\"\n"
+     ],
+     [
+      48,
+      "      Resource  = \"*\"\n"
+     ],
+     [
+      49,
+      "    }]\n"
+     ],
+     [
+      50,
+      "  })\n"
+     ],
+     [
+      51,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     36,
+     51
+    ],
+    "resource": "aws_kms_key.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_61",
+    "bc_check_id": null,
+    "check_name": "Ensure that an S3 bucket has a lifecycle configuration",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "lifecycle_rule",
+      "resource_type"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": {
+     "code_block": [
+      [
+       96,
+       "resource \"aws_s3_bucket_lifecycle_configuration\" \"reports\" {\n"
+      ],
+      [
+       97,
+       "  bucket = aws_s3_bucket.reports.id\n"
+      ],
+      [
+       98,
+       "  rule {\n"
+      ],
+      [
+       99,
+       "    id     = \"expire-old-versions\"\n"
+      ],
+      [
+       100,
+       "    status = \"Enabled\"\n"
+      ],
+      [
+       101,
+       "    filter {}\n"
+      ],
+      [
+       102,
+       "    noncurrent_version_expiration {\n"
+      ],
+      [
+       103,
+       "      noncurrent_days = 90\n"
+      ],
+      [
+       104,
+       "    }\n"
+      ],
+      [
+       105,
+       "    abort_incomplete_multipart_upload {\n"
+      ],
+      [
+       106,
+       "      days_after_initiation = 7\n"
+      ],
+      [
+       107,
+       "    }\n"
+      ],
+      [
+       108,
+       "  }\n"
+      ],
+      [
+       109,
+       "}\n"
+      ]
+     ],
+     "file_path": "\\main.tf",
+     "file_line_range": [
+      96,
+      109
+     ],
+     "resource": "aws_s3_bucket_lifecycle_configuration.reports",
+     "entity_tags": {},
+     "evaluations": null,
+     "file_abs_path": "/lab/secure\\main.tf",
+     "resource_address": null
+    },
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_20",
+    "bc_check_id": null,
+    "check_name": "S3 Bucket has an ACL defined which allows public READ access.",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "resource_type",
+      "access_control_policy",
+      "access_control_policy/grant",
+      "access_control_policy/grant/*/grantee/uri",
+      "acl"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_57",
+    "bc_check_id": null,
+    "check_name": "S3 Bucket has an ACL defined which allows public WRITE access.",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "access_control_policy/grant/*/permission",
+      "resource_type",
+      "access_control_policy",
+      "access_control_policy/grant",
+      "access_control_policy/grant/*/grantee/uri",
+      "acl"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_6",
+    "bc_check_id": null,
+    "check_name": "Ensure that S3 bucket has a Public Access block",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "block_public_policy",
+      "resource_type",
+      "block_public_acls"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": {
+     "code_block": [
+      [
+       58,
+       "resource \"aws_s3_bucket_public_access_block\" \"reports\" {\n"
+      ],
+      [
+       59,
+       "  bucket                  = aws_s3_bucket.reports.id\n"
+      ],
+      [
+       60,
+       "  block_public_acls       = true\n"
+      ],
+      [
+       61,
+       "  block_public_policy     = true\n"
+      ],
+      [
+       62,
+       "  ignore_public_acls      = true\n"
+      ],
+      [
+       63,
+       "  restrict_public_buckets = true\n"
+      ],
+      [
+       64,
+       "}\n"
+      ]
+     ],
+     "file_path": "\\main.tf",
+     "file_line_range": [
+      58,
+      64
+     ],
+     "resource": "aws_s3_bucket_public_access_block.reports",
+     "entity_tags": {},
+     "evaluations": null,
+     "file_abs_path": "/lab/secure\\main.tf",
+     "resource_address": null
+    },
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_21",
+    "bc_check_id": null,
+    "check_name": "Ensure all data stored in the S3 bucket have versioning enabled",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "versioning_configuration/status",
+      "versioning/enabled",
+      "resource_type"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": {
+     "code_block": [
+      [
+       111,
+       "resource \"aws_s3_bucket_versioning\" \"reports\" {\n"
+      ],
+      [
+       112,
+       "  bucket = aws_s3_bucket.reports.id\n"
+      ],
+      [
+       113,
+       "  versioning_configuration {\n"
+      ],
+      [
+       114,
+       "    status = \"Enabled\"\n"
+      ],
+      [
+       115,
+       "  }\n"
+      ],
+      [
+       116,
+       "}\n"
+      ]
+     ],
+     "file_path": "\\main.tf",
+     "file_line_range": [
+      111,
+      116
+     ],
+     "resource": "aws_s3_bucket_versioning.reports",
+     "entity_tags": {},
+     "evaluations": null,
+     "file_abs_path": "/lab/secure\\main.tf",
+     "resource_address": null
+    },
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_145",
+    "bc_check_id": null,
+    "check_name": "Ensure that S3 buckets are encrypted with KMS by default",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "rule/apply_server_side_encryption_by_default/sse_algorithm",
+      "resource_type",
+      "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": {
+     "code_block": [
+      [
+       85,
+       "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"reports\" {\n"
+      ],
+      [
+       86,
+       "  bucket = aws_s3_bucket.reports.id\n"
+      ],
+      [
+       87,
+       "  rule {\n"
+      ],
+      [
+       88,
+       "    apply_server_side_encryption_by_default {\n"
+      ],
+      [
+       89,
+       "      sse_algorithm     = \"aws:kms\"\n"
+      ],
+      [
+       90,
+       "      kms_master_key_id = aws_kms_key.reports.arn\n"
+      ],
+      [
+       91,
+       "    }\n"
+      ],
+      [
+       92,
+       "    bucket_key_enabled = true\n"
+      ],
+      [
+       93,
+       "  }\n"
+      ],
+      [
+       94,
+       "}\n"
+      ]
+     ],
+     "file_path": "\\main.tf",
+     "file_line_range": [
+      85,
+      94
+     ],
+     "resource": "aws_s3_bucket_server_side_encryption_configuration.reports",
+     "entity_tags": {},
+     "evaluations": null,
+     "file_abs_path": "/lab/secure\\main.tf",
+     "resource_address": null
+    },
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_19",
+    "bc_check_id": null,
+    "check_name": "Ensure all data stored in the S3 bucket is securely encrypted at rest",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "rule/apply_server_side_encryption_by_default/sse_algorithm",
+      "resource_type",
+      "server_side_encryption_configuration/rule/apply_server_side_encryption_by_default/sse_algorithm"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": {
+     "code_block": [
+      [
+       85,
+       "resource \"aws_s3_bucket_server_side_encryption_configuration\" \"reports\" {\n"
+      ],
+      [
+       86,
+       "  bucket = aws_s3_bucket.reports.id\n"
+      ],
+      [
+       87,
+       "  rule {\n"
+      ],
+      [
+       88,
+       "    apply_server_side_encryption_by_default {\n"
+      ],
+      [
+       89,
+       "      sse_algorithm     = \"aws:kms\"\n"
+      ],
+      [
+       90,
+       "      kms_master_key_id = aws_kms_key.reports.arn\n"
+      ],
+      [
+       91,
+       "    }\n"
+      ],
+      [
+       92,
+       "    bucket_key_enabled = true\n"
+      ],
+      [
+       93,
+       "  }\n"
+      ],
+      [
+       94,
+       "}\n"
+      ]
+     ],
+     "file_path": "\\main.tf",
+     "file_line_range": [
+      85,
+      94
+     ],
+     "resource": "aws_s3_bucket_server_side_encryption_configuration.reports",
+     "entity_tags": {},
+     "evaluations": null,
+     "file_abs_path": "/lab/secure\\main.tf",
+     "resource_address": null
+    },
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_40",
+    "bc_check_id": null,
+    "check_name": "Ensure AWS IAM policy does not allow full IAM privileges",
+    "check_result": {
+     "result": "PASSED",
+     "entity": {
+      "aws_iam_policy": {
+       "app": {
+        "__end_line__": 171,
+        "__start_line__": 158,
+        "name": [
+         "agentshield-lab-app"
+        ],
+        "policy": [
+         {
+          "Version": "2012-10-17",
+          "Statement": [
+           {
+            "Effect": "Allow",
+            "Action": [
+             "s3:GetObject",
+             "s3:ListBucket"
+            ],
+            "Resource": [
+             "arn:aws:s3:::agentshield-lab-reports",
+             "arn:aws:s3:::agentshield-lab-reports/*"
+            ]
+           }
+          ]
+         }
+        ],
+        "__address__": "aws_iam_policy.app",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "statement[?(@/effect == Allow)]/actions[*]",
+      "inline_policy/Statement[?(@/Effect == Allow)]/Action[*]",
+      "policy/Statement[?(@/Effect == Allow)]/Action[*]"
+     ]
+    },
+    "code_block": [
+     [
+      158,
+      "resource \"aws_iam_policy\" \"app\" {\n"
+     ],
+     [
+      159,
+      "  name = \"agentshield-lab-app\"\n"
+     ],
+     [
+      160,
+      "  policy = jsonencode({\n"
+     ],
+     [
+      161,
+      "    Version = \"2012-10-17\"\n"
+     ],
+     [
+      162,
+      "    Statement = [{\n"
+     ],
+     [
+      163,
+      "      Effect = \"Allow\"\n"
+     ],
+     [
+      164,
+      "      Action = [\"s3:GetObject\", \"s3:ListBucket\"]\n"
+     ],
+     [
+      165,
+      "      Resource = [\n"
+     ],
+     [
+      166,
+      "        \"arn:aws:s3:::agentshield-lab-reports\",\n"
+     ],
+     [
+      167,
+      "        \"arn:aws:s3:::agentshield-lab-reports/*\",\n"
+     ],
+     [
+      168,
+      "      ]\n"
+     ],
+     [
+      169,
+      "    }]\n"
+     ],
+     [
+      170,
+      "  })\n"
+     ],
+     [
+      171,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     158,
+     171
+    ],
+    "resource": "aws_iam_policy.app",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   }
+  ],
+  "failed_checks": [
+   {
+    "check_id": "CKV2_AWS_62",
+    "bc_check_id": null,
+    "check_name": "Ensure S3 buckets should have event notifications enabled",
+    "check_result": {
+     "result": "FAILED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "resource_type"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV2_AWS_5",
+    "bc_check_id": null,
+    "check_name": "Ensure that Security Groups are attached to another resource",
+    "check_result": {
+     "result": "FAILED",
+     "entity": {
+      "aws_security_group": {
+       "app": {
+        "__end_line__": 141,
+        "__start_line__": 121,
+        "description": [
+         "Lab application security group"
+        ],
+        "egress": [
+         {
+          "cidr_blocks": [
+           [
+            "10.20.0.0/16"
+           ]
+          ],
+          "description": [
+           "HTTPS to the internal network"
+          ],
+          "from_port": [
+           443
+          ],
+          "protocol": [
+           "tcp"
+          ],
+          "to_port": [
+           443
+          ]
+         }
+        ],
+        "ingress": [
+         {
+          "cidr_blocks": [
+           [
+            "10.20.0.0/16"
+           ]
+          ],
+          "description": [
+           "HTTPS from the internal network"
+          ],
+          "from_port": [
+           443
+          ],
+          "protocol": [
+           "tcp"
+          ],
+          "to_port": [
+           443
+          ]
+         }
+        ],
+        "name": [
+         "agentshield-lab-app"
+        ],
+        "vpc_id": [
+         "vpc-0123456789abcdef0"
+        ],
+        "__address__": "aws_security_group.app",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "resource_type",
+      "networking"
+     ]
+    },
+    "code_block": [
+     [
+      121,
+      "resource \"aws_security_group\" \"app\" {\n"
+     ],
+     [
+      122,
+      "  name        = \"agentshield-lab-app\"\n"
+     ],
+     [
+      123,
+      "  description = \"Lab application security group\"\n"
+     ],
+     [
+      124,
+      "  vpc_id      = var.vpc_id\n"
+     ],
+     [
+      125,
+      "\n"
+     ],
+     [
+      126,
+      "  ingress {\n"
+     ],
+     [
+      127,
+      "    description = \"HTTPS from the internal network\"\n"
+     ],
+     [
+      128,
+      "    from_port   = 443\n"
+     ],
+     [
+      129,
+      "    to_port     = 443\n"
+     ],
+     [
+      130,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      131,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      132,
+      "  }\n"
+     ],
+     [
+      133,
+      "\n"
+     ],
+     [
+      134,
+      "  egress {\n"
+     ],
+     [
+      135,
+      "    description = \"HTTPS to the internal network\"\n"
+     ],
+     [
+      136,
+      "    from_port   = 443\n"
+     ],
+     [
+      137,
+      "    to_port     = 443\n"
+     ],
+     [
+      138,
+      "    protocol    = \"tcp\"\n"
+     ],
+     [
+      139,
+      "    cidr_blocks = [var.internal_cidr]\n"
+     ],
+     [
+      140,
+      "  }\n"
+     ],
+     [
+      141,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     121,
+     141
+    ],
+    "resource": "aws_security_group.app",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_18",
+    "bc_check_id": null,
+    "check_name": "Ensure the S3 bucket has access logging enabled",
+    "check_result": {
+     "result": "FAILED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "logging",
+      "resource_type"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   },
+   {
+    "check_id": "CKV_AWS_144",
+    "bc_check_id": null,
+    "check_name": "Ensure that S3 bucket has cross-region replication enabled",
+    "check_result": {
+     "result": "FAILED",
+     "entity": {
+      "aws_s3_bucket": {
+       "reports": {
+        "__end_line__": 55,
+        "__start_line__": 53,
+        "bucket": [
+         "agentshield-lab-reports"
+        ],
+        "__address__": "aws_s3_bucket.reports",
+        "__provider_address__": "aws.default"
+       }
+      }
+     },
+     "evaluated_keys": [
+      "resource_type",
+      "replication_configuration/rules/*/status",
+      "rule/*/status"
+     ]
+    },
+    "code_block": [
+     [
+      53,
+      "resource \"aws_s3_bucket\" \"reports\" {\n"
+     ],
+     [
+      54,
+      "  bucket = \"agentshield-lab-reports\"\n"
+     ],
+     [
+      55,
+      "}\n"
+     ]
+    ],
+    "file_path": "\\main.tf",
+    "file_abs_path": "/lab/secure\\main.tf",
+    "repo_file_path": "/terraform-lab/secure/main.tf",
+    "file_line_range": [
+     53,
+     55
+    ],
+    "resource": "aws_s3_bucket.reports",
+    "evaluations": null,
+    "check_class": "checkov.common.graph.checks_infra.base_check",
+    "fixed_definition": null,
+    "entity_tags": null,
+    "caller_file_path": null,
+    "caller_file_line_range": null,
+    "resource_address": null,
+    "severity": null,
+    "bc_category": null,
+    "benchmarks": {},
+    "description": null,
+    "short_description": null,
+    "vulnerability_details": null,
+    "connected_node": null,
+    "guideline": null,
+    "details": [],
+    "check_len": null,
+    "definition_context_file_path": "/lab/secure\\main.tf"
+   }
+  ],
+  "skipped_checks": [],
+  "parsing_errors": []
+ },
+ "summary": {
+  "passed": 41,
+  "failed": 4,
+  "skipped": 0,
+  "parsing_errors": 0,
+  "resource_count": 11,
+  "checkov_version": "3.3.29"
+ },
+ "url": "Add an api key '--bc-api-key <api-key>' to see more detailed insights via https://bridgecrew.cloud"
+}

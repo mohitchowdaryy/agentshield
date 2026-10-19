@@ -25,9 +25,14 @@ app = typer.Typer(
 scan_app = typer.Typer(help="Cloud posture scans (read-only).", no_args_is_help=True)
 redteam_app = typer.Typer(help="AI agent red-team scenarios against the local test agent.", no_args_is_help=True)
 db_app = typer.Typer(help="Database maintenance.", no_args_is_help=True)
+iac_app = typer.Typer(
+    help="Infrastructure-as-Code security scanning with Checkov (static files; no deployment, no cloud credentials).",
+    no_args_is_help=True,
+)
 app.add_typer(scan_app, name="scan")
 app.add_typer(redteam_app, name="redteam")
 app.add_typer(db_app, name="db")
+app.add_typer(iac_app, name="iac")
 
 console = Console()
 err = Console(stderr=True)
@@ -479,6 +484,119 @@ def report(
         err.print(f"wrote {output}")
     else:
         sys.stdout.write(text + "\n")
+
+
+def _print_iac_scan(d: dict[str, Any], findings: list[dict[str, Any]]) -> None:
+    s = d["summary"]
+    console.print(
+        f"[bold]IaC scan {d['id']}[/] ({d['label']}: {d['target']}) Checkov {d['scanner_version']} -> "
+        f"[red]{s.get('failed', 0)} failed[/], [green]{s.get('passed', 0)} passed[/], {s.get('skipped', 0)} skipped, "
+        f"{s.get('resource_count', 0)} resources, {s.get('parsing_errors', 0)} parsing errors"
+    )
+    t = Table(title="Failed checks (static analysis of IaC files; not live cloud posture)")
+    for col in ("check", "resource", "location", "severity", "title"):
+        t.add_column(col)
+    for f in findings:
+        loc = f"{f['file_path']}:{f['line_start']}" if f["line_start"] else f["file_path"]
+        t.add_row(f["check_id"], f["resource"], loc, f["severity"] or "not provided", f["check_name"])
+    console.print(t)
+
+
+@iac_app.command("scanner")
+def iac_scanner() -> None:
+    """Show which Checkov installation AgentShield will use, and its version."""
+    from agentshield.services.iac import scanner_info
+
+    info = scanner_info()
+    if not info["available"]:
+        err.print(f"[red]{info['error']}[/]")
+        raise typer.Exit(2)
+    console.print(f"checkov {info['version']}")
+
+
+@iac_app.command("scan")
+def iac_scan(
+    path: Annotated[Path, typer.Argument(help="Directory of Terraform files to scan.")],
+    label: Annotated[str | None, typer.Option(help="Label for this scan (default: directory name).")] = None,
+) -> None:
+    """Scan a Terraform directory with Checkov and store the results."""
+    from agentshield.models import IacFinding
+    from agentshield.services.iac import finding_dict, run_iac_scan, scan_dict
+
+    if not path.is_dir():
+        err.print(f"[red]not a directory: {path}[/]")
+        raise typer.Exit(2)
+    with _db() as s:
+        scan = run_iac_scan(s, path, label)
+        if scan.status != "completed":
+            err.print(f"[red]Checkov scan failed:[/] {scan.error}")
+            raise typer.Exit(2)
+        failed = s.scalars(select(IacFinding).where(IacFinding.scan_fk == scan.id, IacFinding.result == "failed")).all()
+        _print_iac_scan(scan_dict(scan), [finding_dict(f) for f in failed])
+
+
+def _print_comparison(cmp: dict[str, Any]) -> None:
+    c = cmp["counts"]
+    console.print(
+        f"[bold]Before[/] {cmp['before']['label']} ({cmp['before']['id']}): {c['failed_before']} failed  ->  "
+        f"[bold]After[/] {cmp['after']['label']} ({cmp['after']['id']}): {c['failed_after']} failed"
+    )
+    t = Table(title="Before vs after (same check on the same resource)")
+    for col in ("change", "check", "resource", "title"):
+        t.add_column(col)
+    for label, key, style in (
+        ("fixed", "fixed", "green"),
+        ("still failing", "still_failing", "yellow"),
+        ("new failure", "new_failures", "red"),
+        ("not evaluated after", "not_evaluated_after", "dim"),
+    ):
+        for f in cmp[key]:
+            t.add_row(f"[{style}]{label}[/]", f["check_id"], f["resource"], f["check_name"])
+    console.print(t)
+    console.print(
+        f"fixed {c['fixed']} | still failing {c['still_failing']} | new failures {c['new_failures']} | "
+        f"not evaluated after {c['not_evaluated_after']}"
+    )
+
+
+@iac_app.command("compare")
+def iac_compare(
+    before: Annotated[str, typer.Option(help="Earlier IaC scan id.")],
+    after: Annotated[str, typer.Option(help="Later IaC scan id.")],
+) -> None:
+    """Compare two stored IaC scans check by check."""
+    from agentshield.services.iac import compare_scans
+
+    with _db() as s:
+        try:
+            cmp = compare_scans(s, before, after)
+        except KeyError as exc:
+            err.print("[red]scan not found[/]")
+            raise typer.Exit(2) from exc
+        _print_comparison(cmp)
+
+
+@iac_app.command("demo")
+def iac_demo() -> None:
+    """Offline demo: scan terraform-lab/insecure, scan terraform-lab/secure, and compare the real results."""
+    from agentshield.iac.checkov import CheckovError
+    from agentshield.services.iac import run_lab_demo
+
+    with _db() as s:
+        try:
+            result = run_lab_demo(s)
+        except (CheckovError, ValueError) as exc:
+            err.print(f"[red]{exc}[/]")
+            raise typer.Exit(2) from exc
+    if "error" in result:
+        err.print(f"[red]Checkov scan failed:[/] {result['error']}")
+        raise typer.Exit(2)
+    console.print(
+        f"Infrastructure-as-Code Security Scanning with Checkov {result['before']['scanner_version']} "
+        "(static analysis; nothing deployed, no cloud credentials)"
+    )
+    _print_comparison(result)
+    console.print("View in the dashboard: agentshield serve, then open the IaC Security page.")
 
 
 @app.command()

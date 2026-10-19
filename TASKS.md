@@ -42,3 +42,19 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 - [x] Screenshots of all 8 pages + run detail in docs/screenshots/ (1440x900, headless Edge), embedded in README
 - [ ] Content-Security-Policy for the served dashboard
 - [ ] GCP collector (design in ARCHITECTURE.md)
+
+## Infrastructure-as-Code security scanning
+- [x] Checkov runner: argument-list subprocess (no shell; Windows `.cmd` bypassed), timeouts, version reporting, strict JSON parsing, failed scans persisted with their error
+- [x] `terraform-lab/insecure` (public S3, SSH/RDP/egress to 0.0.0.0/0, `*`-on-`*` IAM) and `terraform-lab/secure` with the same resource names
+- [x] Normalized findings in `iac_scans` / `iac_findings` (migration 0003): check, resource, file and lines, evidence (code, evaluated keys), remediation; severity only when Checkov reports it
+- [x] Before/after comparison matched on (check_id, resource): measured 25 -> 4 failed, 21 fixed, 0 new (Checkov 3.3.29)
+- [x] CLI `agentshield iac demo|scan|compare|scanner`; API `/api/iac/*`; dashboard page with status and resource filters, code evidence, JSON/CSV export (browser-verified)
+- [x] Tests: parser on real captured Checkov output, subprocess safety and errors, persistence, comparison, API, CLI, migration round-trip, and one real-Checkov integration test (runs in CI)
+- [x] Checkov pinned in CI and in the API Docker image, in its own virtualenv
+- [x] Seven-minute interview script: docs/iac-demo-script.md
+- [ ] Pull-request mode (changed files only), justified suppressions, linking IaC checks to live-scanner rules
+- [ ] GCP Terraform examples (the lab is AWS-only)
+
+## Not present
+- [ ] Microsoft PyRIT integration: not implemented (roadmap only); nothing in the codebase depends on it
+

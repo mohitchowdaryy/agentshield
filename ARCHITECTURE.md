@@ -176,10 +176,34 @@ evidence IDs it used and a status: `modeled` (preconditions present, path not
 exercised) or `observed_in_simulation` (a red-team run executed the agent-side
 step in the sandbox). Nothing is labeled as a proven cloud attack path.
 
+## Infrastructure-as-Code scanning
+
+A separate, static pipeline that never touches a cloud account:
+
+```mermaid
+flowchart LR
+  TF[Terraform files<br/>terraform-lab/insecure, secure] --> CK[Checkov subprocess<br/>argv only, timeout, --soft-fail, --skip-download]
+  CK -- JSON --> P[Parser / normalizer<br/>check, resource, file+lines, evidence]
+  P --> DB[(iac_scans, iac_findings)]
+  DB --> CMP[Comparison<br/>matched on check_id + resource]
+  DB --> API[/api/iac/*] --> UI[IaC Security page]
+```
+
+- `agentshield/iac/checkov.py` resolves the scanner (configured path, `PATH`, or `~/.checkov-venv`),
+  invokes it with an argument list (never `shell=True`; on Windows the `.cmd` shim is bypassed via
+  `python -m checkov.main`), enforces a timeout, and parses JSON strictly.
+- Results go to their own tables, `iac_scans` and `iac_findings`, not the live CSPM `findings`
+  table, so an IaC result is never presented as a live exposure. The cloud `Collector` / `Rule`
+  contracts for AWS (and future GCP) are unchanged.
+- Severity is stored only when Checkov reports one; open-source checks report `null`.
+- Browser-initiated scans are limited to the two lab folders; the CLI can scan any directory.
+- A failed scan (missing scanner, timeout, bad output) is persisted with status `failed` and its
+  error.
+
 ## Data model
 
 `cloud_accounts`, `scans`, `resources`, `findings`, `finding_observations`,
 `agents`, `test_scenarios`, `test_runs`, `model_interactions`,
 `tool_call_attempts`, `authorization_decisions`, `evidence_events`,
-`risk_correlations`. IDs are prefixed ULID-style strings; all rows have UTC
+`risk_correlations`, `trial_sets`, `iac_scans`, `iac_findings`. IDs are prefixed ULID-style strings; all rows have UTC
 timestamps. Evidence is passed through the redactor before insert.

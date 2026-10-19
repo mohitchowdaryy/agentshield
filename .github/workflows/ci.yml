@@ -13,6 +13,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
+      - name: Install Checkov in its own virtualenv (for the real IaC scan test)
+        run: |
+          python -m venv "$RUNNER_TEMP/checkov"
+          "$RUNNER_TEMP/checkov/bin/pip" install --quiet checkov==3.3.29
+          echo "AGENTSHIELD_CHECKOV_PATH=$RUNNER_TEMP/checkov/bin/checkov" >> "$GITHUB_ENV"
       - name: Lint
         run: ruff check src tests && ruff format --check src tests
       - name: Type check
@@ -51,4 +56,6 @@ jobs:
           docker run -d --name api -p 127.0.0.1:8000:8000 agentshield-api
           for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8000/health && break; sleep 2; done
           curl -fsS http://127.0.0.1:8000/api/health
+          curl -fsS http://127.0.0.1:8000/api/iac/scanner | grep '"available":true'
+          curl -fsS -X POST http://127.0.0.1:8000/api/iac/demo | grep '"fixed"'
           docker rm -f api

@@ -1,4 +1,4 @@
-import { Activity, Cloud, FileWarning, GitBranch, History, LayoutDashboard, Menu, Settings, ShieldCheck, Swords, X } from "lucide-react";
+import { Activity, Cloud, FileCode2, FileWarning, GitBranch, History, LayoutDashboard, Menu, Settings, ShieldCheck, Swords, X } from "lucide-react";
 import { useState } from "react";
 import { NavLink, Navigate, Route, Routes } from "react-router-dom";
 import { cn } from "./components/ui";
@@ -6,6 +6,7 @@ import AttackPaths from "./pages/AttackPaths";
 import CloudPosture from "./pages/CloudPosture";
 import Findings from "./pages/Findings";
 import HistoryPage from "./pages/History";
+import IacSecurity from "./pages/IacSecurity";
 import Overview from "./pages/Overview";
 import RedTeam from "./pages/RedTeam";
 import RunDetail from "./pages/RunDetail";
@@ -15,6 +16,7 @@ import ToolTraces from "./pages/ToolTraces";
 const NAV = [
   { to: "/", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/cloud", label: "Cloud Posture", icon: Cloud },
+  { to: "/iac", label: "IaC Security Scanning", icon: FileCode2 },
   { to: "/redteam", label: "AI Red Team", icon: Swords },
   { to: "/traces", label: "Agent Tool Traces", icon: Activity },
   { to: "/paths", label: "Attack Path Explorer", icon: GitBranch },
@@ -90,6 +92,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Overview />} />
             <Route path="/cloud" element={<CloudPosture />} />
+            <Route path="/iac" element={<IacSecurity />} />
             <Route path="/redteam" element={<RedTeam />} />
             <Route path="/traces" element={<ToolTraces />} />
             <Route path="/paths" element={<AttackPaths />} />

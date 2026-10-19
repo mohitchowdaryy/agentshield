@@ -19,12 +19,13 @@ deterministic agent simulator).
 | Area | What is implemented |
 |---|---|
 | Cloud posture (AWS) | boto3 read-only collector (STS, S3, S3 Control, IAM, CloudTrail) with pagination, adaptive retries, and AccessDenied recorded as *collection gaps*. 12 rules: S3 Block Public Access (account and bucket), public bucket policies, default encryption, versioning, IAM full-admin and service wildcards, public role trust, root MFA, root access keys, multi-region CloudTrail, log-file validation. Findings are deduplicated by a stable fingerprint across scans. |
+| Infrastructure-as-Code security scanning | Static Terraform analysis with the open-source **Checkov** scanner (subprocess, no shell, timeouts, version reporting). A `terraform-lab` with insecure and fixed versions of the same resources, normalized findings (check, resource, file and lines, evidence, remediation), and a check-by-check before/after comparison. Severity is shown only when Checkov reports it. Separate from live cloud posture: nothing is deployed and no credentials are used. |
 | Agent red-teaming | 3 end-to-end scenarios: direct injection with path traversal, indirect injection through a poisoned retrieved document, and tool-output injection through a cloud resource tag. Mapped to OWASP LLM Top 10 2025 and MITRE ATLAS. |
 | Agent runtime | A tool-calling agent loop with 4 synthetic tools (document search, file read, simulated outbound message, mock cloud config lookup). System, user, retrieved and tool content are kept in separate, labeled channels. Providers: an offline deterministic **simulator** (naive / resistant profiles) and **Anthropic** (structured tool calling, timeouts, bounded retries, token usage, cost estimate). |
 | Tool gateway | Default-deny allowlist, Pydantic argument validation, path-traversal and unsafe-identifier rejection, resource scopes, destination allowlist (email and https), DLP canary check, human approval for sensitive calls after untrusted content, per-run call budgets. Every decision carries rule IDs. **No LLM is consulted for authorization.** |
 | Evaluation | From recorded evidence only: did the model see the payload, propose an unsafe call, did the gateway allow it, did a violation execute, was the legitimate task done → `succeeded / failed / inconclusive / errored`. Runs can be re-evaluated later from the database (`agentshield evaluate`). |
 | Correlation | 3 transparent rules joining IAM / S3 findings, agent identity and data sources, and red-team runs. Status is `modeled` or `agent_step_observed_in_simulation`, never "proven". |
-| Interfaces | FastAPI API, Typer CLI, React dashboard (8 pages), JSON/CSV export. |
+| Interfaces | FastAPI API, Typer CLI, React dashboard (9 pages), JSON/CSV export. |
 
 ## Architecture
 
@@ -244,6 +245,7 @@ with `defense_layer: model`.
 |---|---|
 | Overview | Counts from persisted evidence, provenance banner, severity / outcome / denial charts |
 | Cloud Posture | Run demo or AWS scans, scan history, collection gaps, resource inventory |
+| IaC Security Scanning | Checkov scans of the Terraform lab, before/after comparison, findings filtered by status and resource, code evidence, JSON/CSV export |
 | AI Red Team | Scenario cards with payloads and mappings, run controls, latest outcome matrix |
 | Agent Tool Traces | Every proposed call, gateway decision, rules, and whether it executed |
 | Attack Path Explorer | React Flow graph per correlation; observed vs modeled edges; evidence record |
@@ -283,6 +285,42 @@ and a fake client for Anthropic. It makes no real AWS or LLM calls. CI
 ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs lint, type checks, tests, a security
 regression subset, `pip-audit`, the frontend build and `npm audit`.
 
+## Infrastructure-as-Code security scanning (no cloud account needed)
+
+A cloud-account-free security demo: Checkov scans intentionally insecure Terraform in
+[`terraform-lab/insecure`](terraform-lab/insecure/main.tf), then the fixed version in
+[`terraform-lab/secure`](terraform-lab/secure/main.tf), and AgentShield compares the two real
+results check by check. Nothing is deployed; this is static analysis, **not** live CSPM.
+
+Install Checkov in its own virtualenv, so its dependencies can't change AgentShield's pinned ones:
+
+```bash
+python -m venv ~/.checkov-venv
+```
+
+```bash
+~/.checkov-venv/bin/pip install checkov==3.3.29
+```
+
+(On Windows the pip path is `~\.checkov-venv\Scripts\pip`.) AgentShield finds Checkov on `PATH`, in
+`~/.checkov-venv`, or at `AGENTSHIELD_CHECKOV_PATH`. Then run the one-command demo:
+
+```bash
+agentshield iac demo
+```
+
+Result with Checkov 3.3.29 (measured, not illustrative): **25 failed checks before, 4 after; 21 fixed,
+0 new failures.** All targeted problems are fixed: public bucket access, SSH/RDP/egress open to
+`0.0.0.0/0`, and the `*`-on-`*` IAM policy. The 4 remaining failures (access logging, cross-region
+replication, event notifications, an unattached security group) need extra infrastructure and are
+left visible on purpose. Checkov's open-source checks reported no severity for any finding, so the
+dashboard shows "not provided".
+
+![IaC Security Scanning: before and after](docs/screenshots/10-iac-scanning.png)
+
+Other commands: `agentshield iac scan <dir>`, `agentshield iac compare --before <id> --after <id>`,
+`agentshield iac scanner`. Interview walkthrough: [docs/iac-demo-script.md](docs/iac-demo-script.md).
+
 ## Live model results
 
 30 live runs of `qwen2.5:7b` through Ollama (3 scenarios × 2 policy modes × 5 trials): the model
@@ -303,7 +341,8 @@ The full list is in [docs/limitations.md](docs/limitations.md). The most importa
 
 - More scenarios (jailbreak resistance, multi-step manipulation, excessive agency) toward 10+
 - Aggregate metrics across repeated live-model runs (per-scenario attack success rates with counts)
-- PyRIT adapter for converters and orchestrators
+- PyRIT adapter for converters and orchestrators (not implemented)
+- IaC: pull-request mode (changed files only), justified suppressions, link IaC checks to live-scanner rules
 - GCP collector behind the same inventory contract
 - Effective-permission analysis via IAM Access Analyzer / policy simulator (read-only)
 - Postgres deployment profile

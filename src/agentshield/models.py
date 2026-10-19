@@ -260,6 +260,53 @@ class EvidenceEvent(Base):
     run: Mapped[TestRun] = relationship(back_populates="events")
 
 
+class IacScan(Base):
+    """One static Infrastructure-as-Code scan (e.g. Checkov on a Terraform directory). Not live CSPM."""
+
+    __tablename__ = "iac_scans"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("iacscan"))
+    label: Mapped[str] = mapped_column(String(64))  # e.g. "insecure", "secure", or a directory name
+    target: Mapped[str] = mapped_column(String(1024))  # path relative to the project when possible
+    scanner: Mapped[str] = mapped_column(String(32))
+    scanner_version: Mapped[str | None] = mapped_column(String(32))
+    framework: Mapped[str] = mapped_column(String(32))
+    status: Mapped[str] = mapped_column(String(16))  # completed | failed
+    summary: Mapped[dict[str, Any]] = mapped_column(default=dict)
+    command: Mapped[list[Any]] = mapped_column(default=list)
+    parsing_errors: Mapped[list[Any]] = mapped_column(default=list)
+    error: Mapped[str | None] = mapped_column(Text)
+    duration_ms: Mapped[float | None] = mapped_column(Float)
+    started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    finished_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+    findings: Mapped[list[IacFinding]] = relationship(back_populates="scan", cascade="all, delete-orphan")
+
+
+class IacFinding(Base):
+    """One check result from an IaC scan. Severity is stored only when the scanner reports it."""
+
+    __tablename__ = "iac_findings"
+
+    id: Mapped[str] = mapped_column(String(40), primary_key=True, default=lambda: new_id("iacf"))
+    scan_fk: Mapped[str] = mapped_column(ForeignKey("iac_scans.id", ondelete="CASCADE"), index=True)
+    fingerprint: Mapped[str] = mapped_column(String(64), index=True)
+    check_id: Mapped[str] = mapped_column(String(64), index=True)
+    check_name: Mapped[str] = mapped_column(String(512))
+    result: Mapped[str] = mapped_column(String(16), index=True)  # failed | passed | skipped
+    resource: Mapped[str] = mapped_column(String(512), index=True)
+    resource_type: Mapped[str] = mapped_column(String(128))
+    file_path: Mapped[str] = mapped_column(String(1024))
+    line_start: Mapped[int | None] = mapped_column(Integer)
+    line_end: Mapped[int | None] = mapped_column(Integer)
+    severity: Mapped[str | None] = mapped_column(String(16))  # None when the scanner reports none
+    guideline: Mapped[str | None] = mapped_column(String(1024))
+    remediation: Mapped[str] = mapped_column(Text)
+    evidence: Mapped[dict[str, Any]] = mapped_column(default=dict)
+
+    scan: Mapped[IacScan] = relationship(back_populates="findings")
+
+
 class RiskCorrelation(Base):
     __tablename__ = "risk_correlations"
 
