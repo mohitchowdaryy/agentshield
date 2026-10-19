@@ -40,8 +40,10 @@ AgentShield is a research MVP. These limits are known and deliberate; none of th
 - SQLite is not tamper-evident; evidence integrity relies on the local file system.
 - Redaction is pattern-based and can miss unknown secret formats.
 - The dashboard is served without a Content-Security-Policy header.
-- Docker images are provided but were not build-verified in the development environment used for
-  this MVP (Docker daemon unavailable); CI does not yet build them.
+- Docker images were not built locally (Docker Desktop not running); the CI `docker` job builds both
+  images and smoke-tests the API container's health endpoints.
+- Live-model evidence so far is 31 runs of one small local model (`qwen2.5:7b`); see
+  [live-results.md](live-results.md). It is a small sample, not a rate.
 
 ## Not production-ready until
 

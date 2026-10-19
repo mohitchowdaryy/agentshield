@@ -23,6 +23,7 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 - [ ] Live verification against the Anthropic API (needs a key; incurs charges)
 - [x] Ollama provider for free local open-weight models (structured tool calling, retries, timeouts, mocked-HTTP tests)
 - [x] Live check with Ollama `qwen2.5:7b`: one tool-output-injection run, protected mode (2026-10-19). The model called `lookup_cloud_config`, proposed no unsafe call, and completed the task in 81 s. Its answer echoed part of the injected text. Single sample only, not a rate
+- [x] Live trials with Ollama `qwen2.5:7b`: 3 scenarios x 2 modes x 5 trials; 0/30 unsafe proposals, over-refusal under direct injection (task done 1/10). Write-up: docs/live-results.md
 - [x] Completion markers accept paraphrase alternatives (`a|b`), found during the live run
 
 ## Milestone 3 — Research platform
@@ -35,9 +36,9 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 
 ## Milestone 4 — Portfolio release
 - [x] Dark enterprise UI with empty, loading and error states
-- [~] Dockerfiles + docker-compose (written; not built: Docker daemon was not running)
-- [~] GitHub Actions CI (written; runs on first push)
+- [~] Dockerfiles + docker-compose (not built locally; CI docker job builds both images and smoke-tests the API)
+- [x] GitHub Actions CI: lint, types, tests, security subset, pip-audit, frontend build, npm audit, Docker build; actions on v7 (Node 24), runner pinned to ubuntu-24.04
 - [x] Threat model, security policy, limitations, resume bullets from verified facts
-- [ ] Screenshots in docs/screenshots/
+- [x] Screenshots of all 8 pages + run detail in docs/screenshots/ (1440x900, headless Edge), embedded in README
 - [ ] Content-Security-Policy for the served dashboard
 - [ ] GCP collector (design in ARCHITECTURE.md)

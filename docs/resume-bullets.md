@@ -22,5 +22,9 @@ numbers if the code changes.
   sources and red-team runs, labeling paths as modeled vs observed instead of claiming
   exploitability.
 
-Do not claim: live-model attack success rates, production deployment, or GCP support. None of these
+- Evaluated a local open-weight model (`qwen2.5:7b` via Ollama) across 30 live runs (3 injection
+  scenarios x 2 gateway policies x 5 trials): 0 unsafe tool calls proposed, and identified
+  over-refusal under direct injection (legitimate task completed in 1 of 10 runs).
+
+Do not claim: attack success rates (5 trials per cell is not a rate), production deployment, or GCP support. None of these
 exist yet.

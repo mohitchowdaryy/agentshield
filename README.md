@@ -251,8 +251,18 @@ with `defense_layer: model`.
 | Test History & Evidence | Run list and a run detail page with the full evidence timeline |
 | Settings & Integrations | Integration status, server security posture, agent policies, CLI reference |
 
-Screenshots: run `agentshield demo`, `agentshield serve`, and capture each page at 1440×900 into
-`docs/screenshots/` (see [docs/demo-script.md](docs/demo-script.md) for the walkthrough order).
+![Overview](docs/screenshots/01-overview.png)
+
+![Run detail: a live qwen2.5:7b run with its evidence timeline](docs/screenshots/09-run-detail.png)
+
+More: [Cloud Posture](docs/screenshots/02-cloud-posture.png) ·
+[AI Red Team](docs/screenshots/03-ai-red-team.png) ·
+[Tool Traces](docs/screenshots/04-tool-traces.png) ·
+[Attack Paths](docs/screenshots/05-attack-paths.png) ·
+[Findings](docs/screenshots/06-findings.png) ·
+[History](docs/screenshots/07-history.png) ·
+[Settings](docs/screenshots/08-settings.png).
+Screenshots show demo cloud data, simulated runs and live local-model runs together, each labeled.
 
 ## Testing
 
@@ -272,6 +282,12 @@ The suite (135 tests at the time of writing) uses Moto and monkeypatched botocor
 and a fake client for Anthropic. It makes no real AWS or LLM calls. CI
 ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs lint, type checks, tests, a security
 regression subset, `pip-audit`, the frontend build and `npm audit`.
+
+## Live model results
+
+30 live runs of `qwen2.5:7b` through Ollama (3 scenarios × 2 policy modes × 5 trials): the model
+proposed no unsafe tool call in any run, and it over-refused under direct injection, completing the
+legitimate task in 1 of 10 runs. Details, setup and caveats: [docs/live-results.md](docs/live-results.md).
 
 ## Limitations
 

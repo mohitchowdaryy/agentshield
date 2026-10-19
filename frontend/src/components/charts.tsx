@@ -43,7 +43,7 @@ export function SeverityBars({ data }: { data: { severity: string; count: number
         <XAxis dataKey="severity" interval={0} {...axis} tickFormatter={(v: string) => SEV_SHORT[v] ?? v} />
         <YAxis allowDecimals={false} {...axis} axisLine={false} />
         <Tooltip {...tooltipStyle} formatter={(v) => [v, "open findings"]} labelFormatter={(l) => `severity: ${l}`} />
-        <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={44}>
+        <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={44} isAnimationActive={false}>
           {data.map((d) => (
             <Cell key={d.severity} fill={SEVERITY_RAMP[d.severity]} />
           ))}
@@ -68,7 +68,7 @@ export function OutcomeByMode({ data }: { data: Record<string, number | string>[
           iconSize={9}
         />
         {OUTCOME_ORDER.map((o) => (
-          <Bar key={o} dataKey={o} name={o} stackId="a" fill={OUTCOME_CHART[o]} stroke="#0a0f1c" strokeWidth={2}>
+          <Bar key={o} dataKey={o} name={o} stackId="a" fill={OUTCOME_CHART[o]} stroke="#0a0f1c" strokeWidth={2} isAnimationActive={false}>
             <LabelList dataKey={o} position="center" fill="#ffffff" fontSize={11} formatter={(v: unknown) => (v ? String(v) : "")} />
           </Bar>
         ))}
@@ -85,7 +85,7 @@ export function CountBars({ data, label, color = "#5b7cfa" }: { data: { key: str
         <XAxis dataKey="key" interval={0} {...axis} />
         <YAxis allowDecimals={false} {...axis} axisLine={false} />
         <Tooltip {...tooltipStyle} formatter={(v) => [v, label]} />
-        <Bar dataKey="count" fill={color} radius={[4, 4, 0, 0]} maxBarSize={44}>
+        <Bar dataKey="count" fill={color} radius={[4, 4, 0, 0]} maxBarSize={44} isAnimationActive={false}>
           <LabelList dataKey="count" position="top" fill="#a5b0cb" fontSize={11} />
         </Bar>
       </BarChart>
