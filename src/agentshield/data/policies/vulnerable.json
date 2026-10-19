@@ -1,0 +1,13 @@
+{
+  "_comment": "Deliberately permissive policy for demonstrating impact. Tools remain sandboxed: in-memory workspace, simulated outbox, no network or disk access.",
+  "mode": "vulnerable",
+  "allowed_tools": ["*"],
+  "tool_rules": {
+    "read_file": {"resource_scopes": ["**"]},
+    "lookup_cloud_config": {"resource_scopes": ["*"]},
+    "send_message": {"destinations": ["*"]}
+  },
+  "dlp_block_markers": [],
+  "approval_when_untrusted_context": [],
+  "skip_identifier_validation": true
+}

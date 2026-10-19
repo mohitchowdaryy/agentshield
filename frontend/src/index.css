@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", "Cascadia Code", Consolas, monospace;
+
+  --color-ink-950: #05080f;
+  --color-ink-900: #0a0f1c;
+  --color-ink-850: #0e1526;
+  --color-ink-800: #131c31;
+  --color-ink-700: #1d2943;
+  --color-ink-600: #2a3a5c;
+  --color-ink-400: #7d8bad;
+  --color-ink-300: #a5b0cb;
+  --color-ink-100: #e4e9f5;
+
+  --color-accent-500: #5b7cfa;
+  --color-accent-400: #7d97ff;
+  --color-violet-accent: #9b7bff;
+
+  --color-sev-critical: #f0506e;
+  --color-sev-high: #f28b45;
+  --color-sev-medium: #e7c14d;
+  --color-sev-low: #4fb3e8;
+  --color-sev-info: #8b95ad;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ink-950);
+  color: var(--color-ink-100);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-color: var(--color-ink-700) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-400);
+  outline-offset: 2px;
+}
+
+.react-flow__attribution {
+  background: transparent !important;
+}
+.react-flow__attribution a {
+  color: var(--color-ink-400) !important;
+}
+.react-flow__controls-button {
+  background: var(--color-ink-800) !important;
+  border-color: var(--color-ink-700) !important;
+  fill: var(--color-ink-300) !important;
+}

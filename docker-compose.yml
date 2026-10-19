@@ -1,0 +1,22 @@
+# Local development stack. Ports are published on 127.0.0.1 only.
+services:
+  api:
+    build: .
+    environment:
+      AGENTSHIELD_CORS_ORIGINS: '["http://localhost:8080","http://127.0.0.1:8080"]'
+      # Optional live integrations; pass through from your shell, never commit values.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      AGENTSHIELD_API_TOKEN: ${AGENTSHIELD_API_TOKEN:-}
+    volumes:
+      - agentshield-data:/home/agentshield/data
+      # Uncomment to scan AWS with your local profiles (read-only mount):
+      # - ~/.aws:/home/agentshield/.aws:ro
+    ports:
+      - "127.0.0.1:8000:8000"
+  web:
+    build: ./frontend
+    depends_on: [api]
+    ports:
+      - "127.0.0.1:8080:8080"
+volumes:
+  agentshield-data:

@@ -1,0 +1,160 @@
+{
+  "_comment": "SYNTHETIC DEMO DATA. Account 111122223333 is the AWS documentation example account. No real resources.",
+  "provider": "aws",
+  "partition": "aws",
+  "account_id": "111122223333",
+  "caller_arn": "arn:aws:sts::111122223333:assumed-role/SecurityAudit/agentshield-demo",
+  "source": "demo",
+  "regions": ["us-east-1", "us-west-2"],
+  "account_public_access_block": null,
+  "account_public_access_block_status": "not_configured",
+  "s3_buckets": [
+    {
+      "name": "acme-agent-knowledge-base",
+      "arn": "arn:aws:s3:::acme-agent-knowledge-base",
+      "region": "us-east-1",
+      "public_access_block": null,
+      "public_access_block_status": "not_configured",
+      "policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "PublicReadForDocsSite",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::acme-agent-knowledge-base/*"
+          }
+        ]
+      },
+      "policy_status": "present",
+      "encryption_rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}],
+      "encryption_status": "configured",
+      "versioning": "Disabled",
+      "tags": {"owner": "support-platform", "data-classification": "internal"}
+    },
+    {
+      "name": "acme-finance-reports",
+      "arn": "arn:aws:s3:::acme-finance-reports",
+      "region": "us-east-1",
+      "public_access_block": {"BlockPublicAcls": true, "IgnorePublicAcls": true, "BlockPublicPolicy": true, "RestrictPublicBuckets": true},
+      "public_access_block_status": "configured",
+      "policy": null,
+      "policy_status": "absent",
+      "encryption_rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "aws:kms", "KMSMasterKeyID": "arn:aws:kms:us-east-1:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab"}, "BucketKeyEnabled": true}],
+      "encryption_status": "configured",
+      "versioning": "Enabled",
+      "tags": {"owner": "finance", "data-classification": "confidential"}
+    },
+    {
+      "name": "acme-app-logs",
+      "arn": "arn:aws:s3:::acme-app-logs",
+      "region": "us-west-2",
+      "public_access_block": {"BlockPublicAcls": true, "IgnorePublicAcls": true, "BlockPublicPolicy": false, "RestrictPublicBuckets": false},
+      "public_access_block_status": "configured",
+      "policy": null,
+      "policy_status": "absent",
+      "encryption_rules": null,
+      "encryption_status": "not_configured",
+      "versioning": "Suspended",
+      "tags": {"owner": "platform"}
+    },
+    {
+      "name": "acme-legacy-archive",
+      "arn": "arn:aws:s3:::acme-legacy-archive",
+      "region": "us-east-1",
+      "public_access_block": {"BlockPublicAcls": true, "IgnorePublicAcls": true, "BlockPublicPolicy": true, "RestrictPublicBuckets": true},
+      "public_access_block_status": "configured",
+      "policy": null,
+      "policy_status": "unknown",
+      "encryption_rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}],
+      "encryption_status": "configured",
+      "versioning": "Enabled",
+      "tags": {}
+    }
+  ],
+  "iam_roles": [
+    {
+      "name": "agentshield-support-agent-role",
+      "arn": "arn:aws:iam::111122223333:role/agentshield-support-agent-role",
+      "path": "/",
+      "trust_policy": {
+        "Version": "2012-10-17",
+        "Statement": [{"Effect": "Allow", "Principal": {"Service": "lambda.amazonaws.com"}, "Action": "sts:AssumeRole"}]
+      },
+      "inline_policies": {
+        "knowledge-base-access": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {"Sid": "BroadS3", "Effect": "Allow", "Action": ["s3:*"], "Resource": "*"},
+            {"Sid": "Logs", "Effect": "Allow", "Action": ["logs:CreateLogStream", "logs:PutLogEvents"], "Resource": "arn:aws:logs:us-east-1:111122223333:log-group:/aws/lambda/support-agent:*"}
+          ]
+        }
+      },
+      "attached_policies": [],
+      "tags": {"agentshield:agent-id": "support-agent"}
+    },
+    {
+      "name": "legacy-ci-deployer",
+      "arn": "arn:aws:iam::111122223333:role/legacy-ci-deployer",
+      "path": "/",
+      "trust_policy": {
+        "Version": "2012-10-17",
+        "Statement": [{"Effect": "Allow", "Principal": {"AWS": "*"}, "Action": "sts:AssumeRole"}]
+      },
+      "inline_policies": {},
+      "attached_policies": [
+        {
+          "arn": "arn:aws:iam::aws:policy/AdministratorAccess",
+          "name": "AdministratorAccess",
+          "document": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": "*", "Resource": "*"}]}
+        }
+      ],
+      "tags": {}
+    },
+    {
+      "name": "ops-readonly",
+      "arn": "arn:aws:iam::111122223333:role/ops-readonly",
+      "path": "/",
+      "trust_policy": {
+        "Version": "2012-10-17",
+        "Statement": [{"Effect": "Allow", "Principal": {"AWS": "arn:aws:iam::111122223333:root"}, "Action": "sts:AssumeRole", "Condition": {"Bool": {"aws:MultiFactorAuthPresent": "true"}}}]
+      },
+      "inline_policies": {
+        "describe-only": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["ec2:Describe*", "s3:GetBucketLocation", "s3:ListAllMyBuckets"], "Resource": "*"}]}
+      },
+      "attached_policies": [],
+      "tags": {}
+    },
+    {
+      "name": "AWSServiceRoleForSupport",
+      "arn": "arn:aws:iam::111122223333:role/aws-service-role/support.amazonaws.com/AWSServiceRoleForSupport",
+      "path": "/aws-service-role/support.amazonaws.com/",
+      "trust_policy": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Principal": {"Service": "support.amazonaws.com"}, "Action": "sts:AssumeRole"}]},
+      "inline_policies": {},
+      "attached_policies": [],
+      "tags": {}
+    }
+  ],
+  "root_account": {"mfa_enabled": false, "access_keys_present": false},
+  "cloudtrail_trails": [
+    {
+      "name": "management-events",
+      "arn": "arn:aws:cloudtrail:us-east-1:111122223333:trail/management-events",
+      "home_region": "us-east-1",
+      "is_multi_region": false,
+      "log_file_validation": false,
+      "is_logging": true
+    }
+  ],
+  "gaps": [
+    {
+      "service": "s3",
+      "operation": "GetBucketPolicy",
+      "resource": "arn:aws:s3:::acme-legacy-archive",
+      "region": "us-east-1",
+      "error_code": "AccessDenied",
+      "message": "Demo: the scanning principal was denied s3:GetBucketPolicy; policy analysis skipped for this bucket."
+    }
+  ]
+}

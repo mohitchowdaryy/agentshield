@@ -1,0 +1,7 @@
+.venv
+.git
+frontend
+**/__pycache__
+.agentshield
+*.db
+.env

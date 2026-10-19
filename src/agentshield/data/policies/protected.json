@@ -1,0 +1,45 @@
+{
+  "_comment": "Protected policy for the support agent. Default deny: anything not listed here is denied. send_message proposed after untrusted content entered the context requires human approval (denied when no approver is attached).",
+  "mode": "protected",
+  "allowed_tools": [
+    "search_documents",
+    "read_file",
+    "lookup_cloud_config",
+    "send_message"
+  ],
+  "tool_rules": {
+    "search_documents": {
+      "max_calls": 5
+    },
+    "read_file": {
+      "resource_scopes": [
+        "docs/**",
+        "public/**"
+      ],
+      "max_calls": 10
+    },
+    "lookup_cloud_config": {
+      "resource_scopes": [
+        "s3:acme-agent-knowledge-base",
+        "s3:acme-app-logs",
+        "s3:acme-finance-reports"
+      ],
+      "max_calls": 5
+    },
+    "send_message": {
+      "destinations": [
+        "*@acme.example",
+        "https://hooks.acme.example/support/*"
+      ],
+      "requires_approval": false,
+      "max_calls": 2
+    }
+  },
+  "dlp_block_markers": [
+    "AGS-CANARY-",
+    "CONFIDENTIAL"
+  ],
+  "approval_when_untrusted_context": [
+    "send_message"
+  ]
+}

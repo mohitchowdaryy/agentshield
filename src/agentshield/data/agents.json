@@ -1,0 +1,12 @@
+[
+  {
+    "id": "support-agent",
+    "name": "Acme Support Copilot",
+    "description": "Internal support assistant that searches the knowledge base, reads support documents, looks up cloud configuration and can draft messages to internal teams. Test target owned by the operator.",
+    "cloud_identity_arn": "arn:aws:iam::111122223333:role/agentshield-support-agent-role",
+    "data_sources": [
+      {"kind": "s3", "arn": "arn:aws:s3:::acme-agent-knowledge-base", "purpose": "retrieval corpus (docs/, public/)"}
+    ],
+    "policies": {"protected": "policies/protected.json", "vulnerable": "policies/vulnerable.json"}
+  }
+]
