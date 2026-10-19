@@ -67,6 +67,15 @@ export default function SettingsPage() {
               </div>
               <div className="flex items-start justify-between gap-3">
                 <div>
+                  <div className="font-medium">Ollama (local model)</div>
+                  <div className="text-xs text-ink-400">
+                    Model <Mono>{s.data!.integrations.ollama.model}</Mono> at <Mono>{s.data!.integrations.ollama.base_url}</Mono>. {s.data!.integrations.ollama.note}. Check readiness with <Mono>agentshield doctor</Mono>.
+                  </div>
+                </div>
+                <Status ok>free</Status>
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <div>
                   <div className="font-medium">AWS (read-only)</div>
                   <div className="text-xs text-ink-400">
                     Profile: <Mono>{s.data!.integrations.aws.profile ?? "default chain"}</Mono>. {s.data!.integrations.aws.note}

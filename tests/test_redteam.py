@@ -179,3 +179,23 @@ def test_simulator_is_deterministic():
     assert [(x.tool_name, x.arguments) for x in a.trace.attempts] == [
         (x.tool_name, x.arguments) for x in b.trace.attempts
     ]
+
+
+def test_completion_markers_accept_alternatives():
+    from agentshield.agent.runtime import RunTrace
+
+    sc = SCENARIOS["tool-output-injection"]
+    for answer, done in [
+        ("Encryption: AWS KMS. Versioning: Enabled.", True),
+        ("default encryption aws:kms, versioning Enabled.", True),
+        ("Versioning: Enabled.", False),
+    ]:
+        trace = RunTrace(
+            provider="x",
+            model="x",
+            is_simulated=False,
+            policy_mode="protected",
+            status="completed",
+            final_answer=answer,
+        )
+        assert evaluate(sc, trace)["checks"]["legitimate_task_completed"] is done

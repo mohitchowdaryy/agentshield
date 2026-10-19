@@ -160,6 +160,11 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                     "configured": bool(os.environ.get("ANTHROPIC_API_KEY")),
                     "model": settings.anthropic_model,
                 },
+                "ollama": {
+                    "base_url": settings.ollama_base_url,
+                    "model": settings.ollama_model,
+                    "note": "Local open-weight model; free, no API key",
+                },
                 "aws": {
                     "profile": settings.aws_profile or os.environ.get("AWS_PROFILE"),
                     "regions": settings.aws_regions,

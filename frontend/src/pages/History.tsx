@@ -84,6 +84,7 @@ export default function HistoryPage() {
                 <option value="">all providers</option>
                 <option value="simulator">simulator</option>
                 <option value="anthropic">anthropic</option>
+                <option value="ollama">ollama</option>
               </Select>
             </>
           }

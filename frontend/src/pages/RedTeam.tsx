@@ -32,7 +32,7 @@ const ENTRY_LABEL: Record<string, string> = {
   tool_output: "Tool output (indirect)",
 };
 
-type ModelChoice = "simulator:naive" | "simulator:resistant" | "anthropic:";
+type ModelChoice = "simulator:naive" | "simulator:resistant" | "anthropic:" | "ollama:";
 
 export default function RedTeam() {
   const scenarios = useApi<Scenario[]>("/api/redteam/scenarios");
@@ -86,6 +86,7 @@ export default function RedTeam() {
                 <option value="anthropic:" disabled={!anthropicReady}>
                   Anthropic ({settings.data?.integrations.anthropic.model}){anthropicReady ? "" : " - not configured"}
                 </option>
+                <option value="ollama:">Ollama local ({settings.data?.integrations.ollama.model})</option>
               </Select>
             </label>
             <Button
@@ -102,6 +103,11 @@ export default function RedTeam() {
       {provider === "anthropic" && (
         <div className="mb-4 rounded-lg border border-sev-medium/40 bg-sev-medium/10 px-4 py-2.5 text-xs text-sev-medium">
           Live model runs send synthetic scenario data to the provider API and incur charges.
+        </div>
+      )}
+      {provider === "ollama" && (
+        <div className="mb-4 rounded-lg border border-accent-500/40 bg-accent-500/10 px-4 py-2.5 text-xs text-ink-300">
+          Runs a real open-weight model locally through Ollama: free and offline, but a run can take a minute or more. Requires Ollama running with the model pulled.
         </div>
       )}
       {(runOne.error || runAll.error) && <ErrorState error={(runOne.error || runAll.error)!} />}

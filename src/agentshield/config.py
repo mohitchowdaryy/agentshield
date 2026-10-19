@@ -41,6 +41,13 @@ class Settings(BaseSettings):
     # The evidence records which model served each turn.
     anthropic_refusal_fallback: bool = True
 
+    # Local model via Ollama (free, no API key). Keep the URL on localhost so prompts stay on this machine.
+    ollama_base_url: str = "http://127.0.0.1:11434"
+    ollama_model: str = "qwen2.5:7b"
+    ollama_timeout_seconds: float = 180.0
+    # None uses the model's default sampling, so repeated trials can differ.
+    ollama_temperature: float | None = None
+
     # AWS scanning
     aws_profile: str | None = None
     aws_regions: list[str] = []

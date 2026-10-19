@@ -106,6 +106,25 @@ def doctor(
         f"ANTHROPIC_API_KEY {'set' if key else 'unset'}; SDK {sdk}; model {settings.anthropic_model}",
     )
 
+    import httpx
+
+    try:
+        tags = httpx.get(f"{settings.ollama_base_url.rstrip('/')}/api/tags", timeout=2.0).json()
+        models = [m.get("name", "") for m in tags.get("models", [])]
+        have = settings.ollama_model in models
+        t.add_row(
+            "ollama provider",
+            "[green]ready[/]" if have else "[yellow]model missing[/]",
+            f"{settings.ollama_base_url}; model {settings.ollama_model}"
+            + ("" if have else f" not pulled (run: ollama pull {settings.ollama_model})"),
+        )
+    except (httpx.HTTPError, ValueError):
+        t.add_row(
+            "ollama provider",
+            "[yellow]not running[/]",
+            f"no Ollama server at {settings.ollama_base_url} (install from ollama.com, then `ollama serve`)",
+        )
+
     import boto3
 
     creds = (
@@ -249,6 +268,22 @@ class ConsoleApprover:
         return typer.confirm("Approve this tool call?", default=False)
 
 
+def _live_notice(prov: Any, trials: int = 1) -> None:
+    """Tell the operator where scenario data goes before a live-model run."""
+    if prov.is_simulated:
+        return
+    runs = f"{trials} runs" if trials > 1 else "this run"
+    if prov.name == "ollama":
+        console.print(
+            f"[cyan]Live local model {prov.model} via Ollama: free and on this machine; {runs} may be slow.[/]"
+        )
+    else:
+        console.print(
+            f"[yellow]Live model {prov.model}: {runs} send synthetic scenario data to the provider and incur API "
+            "charges.[/]"
+        )
+
+
 def _execute(scenario_ids: list[str], modes: list[str], provider: str, profile: str, interactive: bool) -> None:
     from agentshield.agent.providers import ProviderError, get_provider
     from agentshield.correlation.engine import compute_correlations
@@ -264,11 +299,7 @@ def _execute(scenario_ids: list[str], modes: list[str], provider: str, profile: 
     except (KeyError, ProviderError) as exc:
         err.print(f"[red]{exc}[/]")
         raise typer.Exit(2) from exc
-    if not prov.is_simulated:
-        console.print(
-            f"[yellow]Live model run with {prov.model}: this sends synthetic scenario data to the "
-            "provider and incurs API charges.[/]"
-        )
+    _live_notice(prov)
     batch = new_id("batch") if len(scenarios) * len(modes) > 1 else None
     rows = []
     with _db() as s:
@@ -314,11 +345,7 @@ def _execute_trials(scenario_id: str, mode: str, provider: str, profile: str, tr
     except (KeyError, ProviderError) as exc:
         err.print(f"[red]{exc}[/]")
         raise typer.Exit(2) from exc
-    if not prov.is_simulated:
-        console.print(
-            f"[yellow]Live model run with {prov.model}: {trials} trials send synthetic scenario data to the "
-            "provider and incur API charges.[/]"
-        )
+    _live_notice(prov, trials)
     with _db() as s:
         ts = run_trials(s, sc, prov, mode, trials, ConsoleApprover() if interactive else None)  # type: ignore[arg-type]
         compute_correlations(s)

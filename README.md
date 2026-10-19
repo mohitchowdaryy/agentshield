@@ -109,6 +109,8 @@ the Vite dev origin, 256 KiB request bodies, no secrets stored.
 | `AGENTSHIELD_ANTHROPIC_MODEL` | `claude-opus-5-5` | Model under test |
 | `AGENTSHIELD_ANTHROPIC_EFFORT` | `medium` | `output_config.effort` |
 | `AGENTSHIELD_ANTHROPIC_REFUSAL_FALLBACK` | `true` | Server-side `fallbacks: "default"`; a fallback turn is recorded as a `model_fallback` evidence event |
+| `AGENTSHIELD_OLLAMA_MODEL` | `qwen2.5:7b` | Local tool-calling model for `--provider ollama` (free, no key) |
+| `AGENTSHIELD_OLLAMA_BASE_URL` | `http://127.0.0.1:11434` | Keep on localhost so prompts stay on this machine |
 | `AGENTSHIELD_AWS_PROFILE` / `AGENTSHIELD_AWS_REGIONS` | default chain / session region | AWS scan scope |
 | `AGENTSHIELD_MAX_AGENT_TURNS` | `6` | Agent loop bound |
 
@@ -181,6 +183,9 @@ agentshield redteam run --scenario indirect-injection --provider anthropic --tri
 ```bash
 agentshield redteam run-all --provider anthropic
 ```
+
+Free live-model alternative: install [Ollama](https://ollama.com), run `ollama pull qwen2.5:7b`, then
+use `--provider ollama`. Results are labeled with the local model's name.
 
 ```bash
 agentshield evaluate --run-id <run id>

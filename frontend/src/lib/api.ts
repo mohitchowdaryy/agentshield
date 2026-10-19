@@ -288,6 +288,7 @@ export interface SettingsView {
   integrations: {
     simulator: { available: boolean; note: string };
     anthropic: { configured: boolean; model: string };
+    ollama: { base_url: string; model: string; note: string };
     aws: { profile: string | null; regions: string[]; note: string };
   };
 }

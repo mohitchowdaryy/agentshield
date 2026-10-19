@@ -21,6 +21,9 @@ Legend: [x] done and verified (test, CLI run or browser check) · [~] written bu
 - [x] Anthropic provider (structured tool calling, timeouts, retries, usage, cost estimate, refusal fallback evidence), fake-client tests
 - [ ] Live verification against a real AWS account (needs the user's read-only profile)
 - [ ] Live verification against the Anthropic API (needs a key; incurs charges)
+- [x] Ollama provider for free local open-weight models (structured tool calling, retries, timeouts, mocked-HTTP tests)
+- [x] Live check with Ollama `qwen2.5:7b`: one tool-output-injection run, protected mode (2026-10-19). The model called `lookup_cloud_config`, proposed no unsafe call, and completed the task in 81 s. Its answer echoed part of the injected text. Single sample only, not a rate
+- [x] Completion markers accept paraphrase alternatives (`a|b`), found during the live run
 
 ## Milestone 3 — Research platform
 - [ ] Scenarios 4–10+: jailbreak resistance, multi-step workflow manipulation, excessive agency, tool-output contamination of later turns, unauthorized tool attempts via aliasing, confidential-data summarization leak, approval fatigue. Plan: adapt tasks from published benchmarks (AgentDojo, InjecAgent) and load them through a scenario importer (not built yet)
